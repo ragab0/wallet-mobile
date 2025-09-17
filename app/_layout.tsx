@@ -1,7 +1,11 @@
+import { COLORS } from "@/constants/theme";
+import { queryClient } from "@/services/query.service";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -16,9 +20,11 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <>
-      <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false }}></Stack>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
+        <StatusBar style="dark" />
+        <Stack screenOptions={{ headerShown: false }}></Stack>
+      </SafeAreaView>
+    </QueryClientProvider>
   );
 }

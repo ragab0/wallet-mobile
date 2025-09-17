@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "monsters-app",
-    "slug": "monsters-app",
+    "name": "wallet-mobile",
+    "slug": "wallet-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "monstersapp",
+    "scheme": "walletapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

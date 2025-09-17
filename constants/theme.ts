@@ -2,15 +2,17 @@ import { PixelRatio } from "react-native";
 
 const fontScale = PixelRatio.getFontScale();
 
-export const Sizes = {
+export const SIZES = {
   small: 9 * fontScale,
   medium: 14 * fontScale,
   default: 16 * fontScale,
   large: 18 * fontScale,
   xLarge: 24 * fontScale,
+  x2Large: 32 * fontScale,
 };
 
-export const Fonts = {
+export const FONTS = {
+  main: "SpaceMono",
   bold: "InterBold",
   semiBold: "InterSemiBold",
   medium: "InterMedium",
