@@ -21,6 +21,10 @@ export const styles = StyleSheet.create({
     color: COLORS.text,
     textAlign: "center",
   },
+  formContainer: {
+    width: "100%",
+    gap: 15,
+  },
   input: {
     width: "100%",
     fontSize: SIZES.default,
@@ -33,6 +37,12 @@ export const styles = StyleSheet.create({
   },
   inputError: {
     borderColor: COLORS.expense,
+  },
+  textError: {
+    color: COLORS.expense,
+    fontSize: SIZES.medium - 1,
+    marginTop: 4,
+    marginLeft: 4,
   },
   button: {
     width: "100%",

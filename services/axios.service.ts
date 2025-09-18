@@ -23,7 +23,9 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError): Promise<never> => {
+    console.error(error.response?.data);
     const appError = await ErrorHandler.handleError(error);
+    console.error(appError);
     return Promise.reject(appError);
   }
 );
