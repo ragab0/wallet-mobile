@@ -1,5 +1,6 @@
 import type { AppError, ErrorType } from "@/types/error";
 import { AxiosError } from "axios";
+import { router } from "expo-router";
 
 /* NO NEED TO CHECK NETWORK CONNECTIVITY FIRST */
 /* JUST HANDLING AXIOS ERRORS */
@@ -27,17 +28,33 @@ export class ErrorHandler {
 
     if (error.response) {
       const status = error.response.status;
-      const data = error.response.data;
+      const data: any = error.response.data;
 
       switch (status) {
+        case 307:
+          data?.redirectTo &&
+            router.replace({
+              pathname: data?.redirectTo,
+              params: {
+                message: data?.message,
+              },
+            });
+          return {
+            type: "REDIRECT_ERROR",
+            message: data?.message || "Redirection required",
+            details: "",
+            statusCode: 307,
+            retryable: false,
+          };
+
         case 400:
           return this.handleBadRequestError(data);
 
         case 401:
           return {
             type: "AUTHENTICATION_ERROR",
-            message: "Session expired",
-            details: "Your session has expired. Please sign in again.",
+            message: "Authentication failed",
+            details: data?.message || "Unauthorized request",
             statusCode: 401,
             retryable: false,
           };

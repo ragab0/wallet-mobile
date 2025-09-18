@@ -4,7 +4,8 @@ export type ErrorType =
   | "VALIDATION_ERROR"
   | "AUTHENTICATION_ERROR"
   | "TIMEOUT_ERROR"
-  | "UNKNOWN_ERROR";
+  | "UNKNOWN_ERROR"
+  | "REDIRECT_ERROR";
 
 export interface AppError {
   type: ErrorType;
