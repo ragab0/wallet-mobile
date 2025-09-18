@@ -1,4 +1,11 @@
-import { AuthResponse, LoginRequest, SignupRequest } from "@/types/auth";
+import {
+  AuthResponse,
+  LoginRequest,
+  SendVerifyEmailRequest,
+  SendVerifyEmailResponse,
+  SignupRequest,
+  VerifyCodeRequest,
+} from "@/types/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiClient } from "./axios.service";
 
@@ -14,6 +21,7 @@ export const authService = {
       await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
       await AsyncStorage.setItem("user", JSON.stringify(response.data.data));
     }
+
     return response.data;
   },
 
@@ -21,6 +29,32 @@ export const authService = {
     const response = await apiClient.post<AuthResponse>(
       "/auth/signup",
       userData
+    );
+
+    if (response.data.status === "success") {
+      await AsyncStorage.setItem("accessToken", response.data.accessToken);
+      await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
+      await AsyncStorage.setItem("user", JSON.stringify(response.data.data));
+    }
+
+    return response.data;
+  },
+
+  SendVerifyEmail: async (
+    credentials: SendVerifyEmailRequest
+  ): Promise<SendVerifyEmailResponse> => {
+    const response = await apiClient.post<SendVerifyEmailResponse>(
+      "/auth/send-verification",
+      credentials
+    );
+
+    return response.data;
+  },
+
+  verifyCode: async (data: VerifyCodeRequest): Promise<AuthResponse> => {
+    const response = await apiClient.post<AuthResponse>(
+      "/auth/verify-email",
+      data
     );
 
     if (response.data.status === "success") {

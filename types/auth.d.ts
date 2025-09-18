@@ -11,6 +11,24 @@ export interface SignupRequest {
   passwordConfirm: string;
 }
 
+export interface SendVerifyEmailRequest {
+  email: string;
+}
+
+export interface SendVerifyEmailResponse {
+  status: "success";
+  message: string;
+  data: {
+    email: string;
+    expires: string;
+  };
+}
+
+export interface VerifyCodeRequest {
+  email: string;
+  code: string;
+}
+
 interface User {
   id: string;
   email: string;

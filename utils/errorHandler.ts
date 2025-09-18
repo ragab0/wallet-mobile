@@ -1,4 +1,5 @@
 import type { AppError, ErrorType } from "@/types/error";
+import { HttpRedirectResponse } from "@/types/http";
 import { AxiosError } from "axios";
 import { router } from "expo-router";
 
@@ -28,15 +29,16 @@ export class ErrorHandler {
 
     if (error.response) {
       const status = error.response.status;
-      const data: any = error.response.data;
+      const data = error.response.data as HttpRedirectResponse | undefined;
 
       switch (status) {
         case 307:
           data?.redirectTo &&
             router.replace({
-              pathname: data?.redirectTo,
+              pathname: data.redirectTo,
               params: {
-                message: data?.message,
+                message: data.message,
+                payload: JSON.stringify(data.payload),
               },
             });
           return {
@@ -143,7 +145,7 @@ export class ErrorHandler {
   static getErrorIcon(errorType: ErrorType): string {
     switch (errorType) {
       case "NETWORK_ERROR":
-        return "wifi-off";
+        return "wifi";
       case "SERVER_ERROR":
         return "server-outline";
       case "VALIDATION_ERROR":

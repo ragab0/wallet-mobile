@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
     fontSize: SIZES.x2Large,
     color: COLORS.text,
     textAlign: "center",
+    marginBottom: SIZES.large,
   },
   formContainer: {
     width: "100%",
@@ -77,48 +78,59 @@ export const styles = StyleSheet.create({
     fontSize: SIZES.default,
     fontFamily: FONTS.semiBold,
   },
-  verificationContainer: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-    padding: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  verificationTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: COLORS.text,
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  verificationInput: {
-    backgroundColor: COLORS.white,
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    fontSize: 16,
-    color: COLORS.text,
-    width: "100%",
-    textAlign: "center",
-    letterSpacing: 2,
-  },
 
-  errorBox: {
+  successBox: {
     width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFE5E5",
-    borderLeftColor: COLORS.expense,
-    borderLeftWidth: 4,
-    borderRadius: 8,
+    color: "#155724",
+    backgroundColor: "#d4edda",
+    borderLeftColor: "#c3e6cb",
+    borderLeftWidth: 6,
+    borderRadius: 12,
     padding: 12,
   },
-  errorText: {
+  successText: {
     flex: 1,
     fontSize: SIZES.medium,
     color: COLORS.text,
     marginLeft: 8,
+  },
+
+  subtitle: {
+    fontSize: 16,
+    color: "#6B7280",
+    textAlign: "center",
+    marginBottom: 30,
+    lineHeight: 22,
+  },
+  emailText: {
+    fontWeight: "600",
+    color: "#1F2937",
+  },
+  codeContainer: {
+    alignItems: "center",
+    marginVertical: 30,
+  },
+  resendContainer: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  resendText: {
+    fontSize: 14,
+    color: "#6B7280",
+    marginBottom: 8,
+  },
+  resendButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  resendButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#3B82F6",
+  },
+  resendButtonDisabled: {
+    color: "#9CA3AF",
   },
 });

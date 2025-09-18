@@ -7,7 +7,8 @@ export default function index() {
       <Text>index</Text>
       <Link href="/login">Login</Link>
       <Link href="/signup">Signup</Link>
-      <Link href="/verify-email">Verify-Email</Link>
+      <Link href="/send-verification">Send-Verification</Link>
+      <Link href="/verify-code">Verify-Code</Link>
     </View>
   );
 }
