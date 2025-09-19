@@ -1,5 +1,6 @@
+import { AuthProvider } from "@/components/AuthProviders";
+import { queryClient } from "@/configs/queryClient";
 import { COLORS } from "@/constants/theme";
-import { queryClient } from "@/services/query.service";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -23,7 +24,9 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
         <StatusBar style="dark" />
-        <Stack screenOptions={{ headerShown: false }}></Stack>
+        <AuthProvider>
+          <Stack screenOptions={{ headerShown: false }}></Stack>
+        </AuthProvider>
       </SafeAreaView>
     </QueryClientProvider>
   );
