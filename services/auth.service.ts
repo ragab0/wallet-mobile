@@ -1,48 +1,49 @@
+import { useAuthStore } from "@/stores/authStore";
 import {
   AuthResponse,
   LoginRequest,
   SendVerifyEmailRequest,
   SendVerifyEmailResponse,
   SignupRequest,
+  User,
   VerifyCodeRequest,
 } from "@/types/auth";
+import { HttpRedirectResponse } from "@/types/http";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiClient } from "./axios.service";
 
 export const authService = {
-  login: async (credentials: LoginRequest): Promise<AuthResponse> => {
+  getCurrentUser: async () => {
+    const response = await apiClient.get<User>("/auth/me");
+    return response.data;
+  },
+
+  login: async (credentials: LoginRequest) => {
     const response = await apiClient.post<AuthResponse>(
       "/auth/login",
       credentials
     );
 
     if (response.data.status === "success") {
-      await AsyncStorage.setItem("accessToken", response.data.accessToken);
-      await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
-      await AsyncStorage.setItem("user", JSON.stringify(response.data.data));
+      const { accessToken, refreshToken, data: user } = response.data;
+      await AsyncStorage.setItem("accessToken", accessToken);
+      await AsyncStorage.setItem("refreshToken", refreshToken);
+      useAuthStore.getState().setUser(user);
     }
 
     return response.data;
   },
 
-  signup: async (userData: SignupRequest): Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>(
+  signup: async (userData: SignupRequest) => {
+    const response = await apiClient.post<HttpRedirectResponse>(
       "/auth/signup",
       userData
     );
 
-    if (response.data.status === "success") {
-      await AsyncStorage.setItem("accessToken", response.data.accessToken);
-      await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
-      await AsyncStorage.setItem("user", JSON.stringify(response.data.data));
-    }
-
     return response.data;
   },
 
-  SendVerifyEmail: async (
-    credentials: SendVerifyEmailRequest
-  ): Promise<SendVerifyEmailResponse> => {
+  SendVerifyEmail: async (credentials: SendVerifyEmailRequest) => {
     const response = await apiClient.post<SendVerifyEmailResponse>(
       "/auth/send-verification",
       credentials
@@ -51,22 +52,24 @@ export const authService = {
     return response.data;
   },
 
-  verifyCode: async (data: VerifyCodeRequest): Promise<AuthResponse> => {
+  verifyCode: async (data: VerifyCodeRequest) => {
     const response = await apiClient.post<AuthResponse>(
       "/auth/verify-email",
       data
     );
 
     if (response.data.status === "success") {
-      await AsyncStorage.setItem("accessToken", response.data.accessToken);
-      await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
-      await AsyncStorage.setItem("user", JSON.stringify(response.data.data));
+      const { accessToken, refreshToken, data: user } = response.data;
+      await AsyncStorage.setItem("accessToken", accessToken);
+      await AsyncStorage.setItem("refreshToken", refreshToken);
+      useAuthStore.getState().setUser(user);
     }
 
     return response.data;
   },
 
-  logout: async (): Promise<void> => {
+  logout: async () => {
     await AsyncStorage.multiRemove(["accessToken", "refreshToken", "user"]);
+    useAuthStore.getState().clearAuth();
   },
 };
