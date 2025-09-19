@@ -1,4 +1,4 @@
-import { Revenue4 } from "@/assets/images";
+import { Revenue2 } from "@/assets/images";
 import { styles } from "@/assets/styles/auth.styles";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { FormField } from "@/components/FormField";
@@ -46,7 +46,7 @@ export default function Signup() {
       enableAutomaticScroll={false}
     >
       <View style={styles.container}>
-        <Image source={Revenue4} style={styles.img} />
+        <Image source={Revenue2} style={styles.img} />
         <Text style={styles.title}>Create Account</Text>
 
         {apiError && (

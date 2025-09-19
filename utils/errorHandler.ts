@@ -34,7 +34,7 @@ export class ErrorHandler {
       switch (status) {
         case 307:
           data?.redirectTo &&
-            router.replace({
+            router.push({
               pathname: data.redirectTo,
               params: {
                 message: data.message,

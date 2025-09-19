@@ -68,7 +68,7 @@ export function useSendVerifyEmail() {
     mutationFn: (userData: SendVerifyEmailRequest) =>
       authService.SendVerifyEmail(userData),
     onSuccess: (data) => {
-      router.replace({
+      router.push({
         pathname: "/verify-code",
         params: {
           email: data.data.email,
