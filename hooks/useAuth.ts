@@ -1,5 +1,4 @@
 import { authService } from "@/services/auth.service";
-import { useAuthStore } from "@/stores/authStore";
 import {
   LoginRequest,
   SendVerifyEmailRequest,
@@ -7,34 +6,32 @@ import {
   VerifyCodeRequest,
 } from "@/types/auth";
 import { AppError } from "@/types/error";
+import { clearTokens, saveTokens } from "@/utils/tokenStorage";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 
 /** QUERIES */
 
 export const useAuth = () => {
-  const as = useAuthStore();
+  const { data: user, isLoading, isError, refetch } = useCurrentUser();
   return {
-    user: as.user,
-    isAuthenticated: as.isAuthenticated,
-    isLoading: as.isLoading,
-    isInitialized: as.isInitialized,
-    updateUser: as.updateUser,
-    getCurrentUser: as.getCurrentUser,
-    initializeAuth: as.initializeAuth,
+    user,
+    isAuthenticated: !!user && !isError,
+    isLoading, // true only on first load (not background load(isFetching))
+    isInitialized: !isLoading, // Initialized when not loading
+    refetch, // Manual refresh
   };
 };
 
-export const useCurrentUser = () => {
-  const { isAuthenticated } = useAuth();
+export function useCurrentUser() {
   return useQuery({
     queryKey: ["currentUser"],
     queryFn: () => authService.getCurrentUser(),
-    enabled: isAuthenticated, // Only when authenticated
-    retry: 1, // Only retry once on failure
-    // staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
+    enabled: true,
   });
-};
+}
 
 /** MUTATIONS (login/signup & emails) */
 
@@ -42,8 +39,9 @@ export function useLogin() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (userData: LoginRequest) => authService.login(userData),
-    onSuccess: () => {
-      queryClient.clear();
+    onSuccess: async function ({ accessToken, refreshToken, data: user }) {
+      await saveTokens(accessToken, refreshToken);
+      queryClient.setQueryData(["currentUser"], user);
       router.replace("/(tabs)");
     },
     onError: (error: AppError) => {
@@ -53,26 +51,23 @@ export function useLogin() {
 }
 
 export function useSignup() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (userData: SignupRequest) => authService.signup(userData),
-    onSuccess: () => {
-      queryClient.clear();
-      router.replace("/(tabs)");
-    },
     onError: (error: AppError) => {
       return error;
     },
+    // onSuccess: () => {
+    //   /** API returns 307 which handled automatically */
+    //   // router.replace("/send-verification");
+    // },
   });
 }
 
 export function useSendVerifyEmail() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (userData: SendVerifyEmailRequest) =>
       authService.SendVerifyEmail(userData),
     onSuccess: (data) => {
-      queryClient.clear();
       router.replace({
         pathname: "/verify-code",
         params: {
@@ -89,30 +84,39 @@ export function useSendVerifyEmail() {
 }
 
 export function useReSendVerifyEmail() {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (userData: SendVerifyEmailRequest) =>
       authService.SendVerifyEmail(userData),
-    onSuccess: (data) => {
-      queryClient.clear();
-    },
     onError: (error: AppError) => {
       return error;
     },
   });
 }
 
-export const useVerifyCode = () => {
+export function useVerifyCode() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (userData: VerifyCodeRequest) =>
       authService.verifyCode(userData),
-    onSuccess: (data) => {
-      queryClient.clear();
+    onSuccess: async function ({ accessToken, refreshToken, data: user }) {
+      await saveTokens(accessToken, refreshToken);
+      queryClient.setQueryData(["currentUser"], user);
       router.replace("/(tabs)");
     },
     onError: (error: AppError) => {
       return error;
     },
   });
-};
+}
+export function useLogout() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      await clearTokens();
+    },
+    onSuccess: () => {
+      queryClient.clear();
+      router.replace("/login");
+    },
+  });
+}

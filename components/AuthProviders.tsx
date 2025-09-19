@@ -1,3 +1,4 @@
+import AuthLayout from "@/app/(auth)/_layout";
 import { useAuth } from "@/hooks/useAuth";
 import React, { useEffect } from "react";
 import { Text, View } from "react-native";
@@ -7,21 +8,24 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { initializeAuth, isInitialized, isLoading } = useAuth();
+  const { refetch, isInitialized, isLoading, isAuthenticated } = useAuth();
 
   useEffect(() => {
     if (!isInitialized) {
-      initializeAuth();
+      refetch();
     }
-  }, [isInitialized, initializeAuth]);
+  }, [isInitialized, refetch]);
 
-  // Optional: Show loading screen while initializing
   if (!isInitialized || isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>Loading...</Text>
       </View>
     );
+  }
+
+  if (!isAuthenticated) {
+    return <AuthLayout />;
   }
 
   return <>{children}</>;

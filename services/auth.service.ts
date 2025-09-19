@@ -1,20 +1,17 @@
-import { useAuthStore } from "@/stores/authStore";
 import {
   AuthResponse,
   LoginRequest,
   SendVerifyEmailRequest,
   SendVerifyEmailResponse,
   SignupRequest,
-  User,
   VerifyCodeRequest,
 } from "@/types/auth";
 import { HttpRedirectResponse } from "@/types/http";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { apiClient } from "./axios.service";
+import { apiClient } from "../configs/apiClient";
 
 export const authService = {
   getCurrentUser: async () => {
-    const response = await apiClient.get<User>("/auth/me");
+    const response = await apiClient.get<AuthResponse>("/auth/me");
     return response.data;
   },
 
@@ -23,14 +20,6 @@ export const authService = {
       "/auth/login",
       credentials
     );
-
-    if (response.data.status === "success") {
-      const { accessToken, refreshToken, data: user } = response.data;
-      await AsyncStorage.setItem("accessToken", accessToken);
-      await AsyncStorage.setItem("refreshToken", refreshToken);
-      useAuthStore.getState().setUser(user);
-    }
-
     return response.data;
   },
 
@@ -39,7 +28,6 @@ export const authService = {
       "/auth/signup",
       userData
     );
-
     return response.data;
   },
 
@@ -48,7 +36,6 @@ export const authService = {
       "/auth/send-verification",
       credentials
     );
-
     return response.data;
   },
 
@@ -57,19 +44,6 @@ export const authService = {
       "/auth/verify-email",
       data
     );
-
-    if (response.data.status === "success") {
-      const { accessToken, refreshToken, data: user } = response.data;
-      await AsyncStorage.setItem("accessToken", accessToken);
-      await AsyncStorage.setItem("refreshToken", refreshToken);
-      useAuthStore.getState().setUser(user);
-    }
-
     return response.data;
-  },
-
-  logout: async () => {
-    await AsyncStorage.multiRemove(["accessToken", "refreshToken", "user"]);
-    useAuthStore.getState().clearAuth();
   },
 };
