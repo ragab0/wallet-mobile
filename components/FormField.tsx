@@ -13,6 +13,8 @@ interface FormFieldProps {
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   error?: FieldError;
   editable?: boolean;
+  inputStyle?: any;
+  saveErrorSpace?: boolean;
 }
 
 export const FormField: React.FC<FormFieldProps> = ({
@@ -24,6 +26,8 @@ export const FormField: React.FC<FormFieldProps> = ({
   autoCapitalize = "sentences",
   error,
   editable = true,
+  inputStyle,
+  saveErrorSpace = true,
 }) => {
   return (
     <View>
@@ -32,7 +36,10 @@ export const FormField: React.FC<FormFieldProps> = ({
         name={name}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
-            style={[authStyles.input, error && authStyles.inputError]}
+            style={[
+              inputStyle || authStyles.input,
+              error && authStyles.inputError,
+            ]}
             value={value}
             placeholder={placeholder}
             placeholderTextColor={COLORS.textLight}
@@ -46,7 +53,9 @@ export const FormField: React.FC<FormFieldProps> = ({
           />
         )}
       />
-      <Text style={styles.textError}>{error ? error.message : " "}</Text>
+      {saveErrorSpace && (
+        <Text style={styles.textError}>{error ? error.message : " "}</Text>
+      )}
     </View>
   );
 };

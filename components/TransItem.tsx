@@ -1,5 +1,4 @@
 import { COLORS, FONTS, SIZES } from "@/constants/theme";
-import { CATEGORY_ICONS } from "@/constants/trans";
 import { Trans } from "@/types/trans";
 import { formatDate } from "@/utils/formatDate";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,7 +11,7 @@ type props = {
 
 export default function TransaItem({ item, onDelete }: props) {
   const isIncome = parseFloat(item.amount) > 0;
-  const iconName = CATEGORY_ICONS[item.category] || "pricetag-outline";
+  const iconName = item.category.icon || "pricetag-outline";
 
   return (
     <View style={styles.transCard}>
@@ -26,7 +25,7 @@ export default function TransaItem({ item, onDelete }: props) {
         </View>
         <View style={styles.transLeft}>
           <Text style={styles.transTitle}>{item.title}</Text>
-          <Text style={styles.transCategory}>{item.category}</Text>
+          <Text style={styles.transCategory}>{item.category.name}</Text>
         </View>
         <View style={styles.transRight}>
           <Text
