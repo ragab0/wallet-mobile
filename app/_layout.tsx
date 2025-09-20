@@ -25,7 +25,9 @@ export default function RootLayout() {
       <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.background }}>
         <StatusBar style="dark" />
         <AuthProvider>
-          <Stack screenOptions={{ headerShown: false }}></Stack>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+          </Stack>
         </AuthProvider>
       </SafeAreaView>
     </QueryClientProvider>

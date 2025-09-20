@@ -1,7 +1,5 @@
-import AuthLayout from "@/app/(auth)/_layout";
 import { useAuth } from "@/hooks/useAuth";
 import React, { useEffect } from "react";
-import { Text, View } from "react-native";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -16,17 +14,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [isInitialized, refetch]);
 
-  if (!isInitialized || isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  // if (!isInitialized || isLoading) {
+  //   return (
+  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+  //       <Text>Loading...</Text>
+  //     </View>
+  //   );
+  // }
 
-  if (!isAuthenticated) {
-    return <AuthLayout />;
-  }
+  // if (!isAuthenticated) {
+  //   return <AuthLayout />;
+  // }
 
   return <>{children}</>;
 };
