@@ -27,6 +27,7 @@ export default function RootLayout() {
         <AuthProvider>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
+            {/* default - first accessable screen (child) */}
           </Stack>
         </AuthProvider>
       </SafeAreaView>

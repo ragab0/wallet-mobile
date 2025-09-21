@@ -10,12 +10,7 @@ import { HttpRedirectResponse } from "@/types/http";
 import { apiClient } from "../configs/apiClient";
 
 export const authService = {
-  getCurrentUser: async () => {
-    const response = await apiClient.get<AuthResponse>("/auth/me");
-    return response.data;
-  },
-
-  login: async (credentials: LoginRequest) => {
+  login: async function (credentials: LoginRequest) {
     const response = await apiClient.post<AuthResponse>(
       "/auth/login",
       credentials
@@ -23,7 +18,7 @@ export const authService = {
     return response.data;
   },
 
-  signup: async (userData: SignupRequest) => {
+  signup: async function (userData: SignupRequest) {
     const response = await apiClient.post<HttpRedirectResponse>(
       "/auth/signup",
       userData
@@ -31,7 +26,7 @@ export const authService = {
     return response.data;
   },
 
-  SendVerifyEmail: async (credentials: SendVerifyEmailRequest) => {
+  SendVerifyEmail: async function (credentials: SendVerifyEmailRequest) {
     const response = await apiClient.post<SendVerifyEmailResponse>(
       "/auth/send-verification",
       credentials
@@ -39,7 +34,7 @@ export const authService = {
     return response.data;
   },
 
-  verifyCode: async (data: VerifyCodeRequest) => {
+  verifyCode: async function (data: VerifyCodeRequest) {
     const response = await apiClient.post<AuthResponse>(
       "/auth/verify-email",
       data
