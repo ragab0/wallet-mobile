@@ -16,11 +16,14 @@ export interface Trans {
   amount: string;
   title: string;
   type: string;
-  category: Category;
+  category: string; // category.id
   note?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 // Type definitions for the validation schemas
-export type CreateTransForm = yup.InferType<typeof createTransSchema>;
+export type CreateTransForm = yup.InferType<typeof createTransSchema> & {
+  userId?: string;
+};
+export type TransType = "expense" | "income";

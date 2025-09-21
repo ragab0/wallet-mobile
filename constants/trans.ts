@@ -9,3 +9,11 @@ export const CATEGORIES: Category[] = [
   { id: "income", name: "Income", icon: "cash" },
   { id: "other", name: "Other", icon: "ellipsis-horizontal" },
 ];
+
+export const CATEGORIES_INDEXED = CATEGORIES.reduce<Record<string, Category>>(
+  function (acc, curr) {
+    acc[curr.id] = curr;
+    return acc;
+  },
+  {}
+);

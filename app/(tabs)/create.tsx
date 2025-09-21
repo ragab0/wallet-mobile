@@ -3,27 +3,19 @@ import { FormField } from "@/components/FormField";
 import KeyboardLayout from "@/components/KeyboardLayout";
 import { COLORS } from "@/constants/theme";
 import { CATEGORIES } from "@/constants/trans";
-import { Category, CreateTransForm } from "@/types/trans";
+import { useAuth } from "@/hooks/useAuth";
+import { useCreateTransaction } from "@/hooks/useTransaction";
+import { CreateTransForm, TransType } from "@/types/trans";
 import { createTransSchema } from "@/validations/trans.validation";
 import { Ionicons } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { router } from "expo-router";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
 
-const useCreateTransaction = () => {
-  return {
-    mutate: (data: any) => {
-      console.log("Creating transaction:", data);
-    },
-    isLoading: false,
-  };
-};
-
 export default function Create() {
-  const [isExpense, setIsExpense] = useState(true);
-  const createTransactionMutation = useCreateTransaction();
+  const { user } = useAuth();
+  const { isPending: isLoading, mutate } = useCreateTransaction();
   const {
     control,
     handleSubmit,
@@ -38,27 +30,23 @@ export default function Create() {
       title: "",
       category: undefined,
       type: "expense",
+      userId: user?.id,
     },
   });
   const watchedAmount = watch("amount");
-  const watchedTitle = watch("title");
-  const watchedCategory = watch("category");
+  const watchedType = watch("type");
+  const isExpense = watchedType === "expense";
 
   function createHandler(data: CreateTransForm) {
-    const transactionData = {
-      ...data,
-      type: isExpense ? "expense" : "income",
-    };
-    createTransactionMutation.mutate(transactionData);
+    mutate(data);
   }
 
-  const handleCategorySelect = (category: Category) => {
-    console.log(category);
-    setValue("category", category, { shouldValidate: true });
-  };
-
-  const isFormValid =
-    isValid && watchedCategory && watchedAmount && watchedTitle;
+  function typeSelectHandler(type: TransType) {
+    setValue("type", type, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }
 
   return (
     <KeyboardLayout>
@@ -75,16 +63,15 @@ export default function Create() {
           <TouchableOpacity
             style={[
               styles.saveButtonContainer,
-              (!isFormValid || createTransactionMutation.isLoading) &&
-                styles.saveButtonDisabled,
+              (!isValid || isLoading) && styles.saveButtonDisabled,
             ]}
             onPress={handleSubmit(createHandler)}
-            disabled={!isFormValid || createTransactionMutation.isLoading}
+            disabled={!isValid || isLoading}
           >
             <Text style={styles.saveButton}>
-              {createTransactionMutation.isLoading ? "Saving..." : "Save"}
+              {isLoading ? "Saving..." : "Save"}
             </Text>
-            {!createTransactionMutation.isLoading && (
+            {!isLoading && (
               <Ionicons name="checkmark" size={18} color={COLORS.primary} />
             )}
           </TouchableOpacity>
@@ -96,7 +83,7 @@ export default function Create() {
           <View style={styles.typeSelector}>
             <TouchableOpacity
               style={[styles.typeButton, isExpense && styles.typeButtonActive]}
-              onPress={() => setIsExpense(true)}
+              onPress={() => typeSelectHandler("expense")}
             >
               <Ionicons
                 name="arrow-down-circle"
@@ -115,7 +102,7 @@ export default function Create() {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.typeButton, !isExpense && styles.typeButtonActive]}
-              onPress={() => setIsExpense(false)}
+              onPress={() => typeSelectHandler("income")}
             >
               <Ionicons
                 name="arrow-up-circle"
@@ -133,7 +120,6 @@ export default function Create() {
               </Text>
             </TouchableOpacity>
           </View>
-
           {/* amount */}
           <View
             style={[
@@ -154,10 +140,20 @@ export default function Create() {
               />
             </View>
             {errors.amount && (
-              <Text style={styles.inputError}>{errors.amount.message}</Text>
+              <Text
+                style={[
+                  styles.inputError,
+                  !!watchedAmount.length && {
+                    alignSelf: "flex-end",
+                    zIndex: 0,
+                    position: "absolute",
+                  },
+                ]}
+              >
+                {errors.amount.message}
+              </Text>
             )}
           </View>
-
           {/* title input */}
           <View
             style={[
@@ -184,46 +180,48 @@ export default function Create() {
               <Text style={styles.inputError}>{errors.title.message}</Text>
             )}
           </View>
-
           {/* catg */}
           <View>
             <Text style={styles.sectionTitle}>
               <Ionicons name="pricetag-outline" size={16} color={COLORS.text} />{" "}
               Category
             </Text>
-            <View style={styles.categoryGrid}>
-              {CATEGORIES.map((category) => (
-                <TouchableOpacity
-                  key={category.id}
-                  style={[
-                    styles.categoryButton,
-                    watchedCategory?.id === category.id &&
-                      styles.categoryButtonActive,
-                  ]}
-                  onPress={() => handleCategorySelect(category)}
-                >
-                  <Ionicons
-                    name={category.icon}
-                    size={20}
-                    color={
-                      watchedCategory?.id === category.id
-                        ? COLORS.white
-                        : COLORS.text
-                    }
-                    style={styles.categoryIcon}
-                  />
-                  <Text
-                    style={[
-                      styles.categoryButtonText,
-                      watchedCategory?.id === category.id &&
-                        styles.categoryButtonTextActive,
-                    ]}
-                  >
-                    {category.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <Controller
+              name="category"
+              control={control}
+              render={({ field }) => (
+                <View style={styles.categoryGrid}>
+                  {CATEGORIES.map((category) => {
+                    const isActive = field.value === category.id;
+                    return (
+                      <TouchableOpacity
+                        key={category.id}
+                        style={[
+                          styles.categoryButton,
+                          isActive && styles.categoryButtonActive,
+                        ]}
+                        onPress={() => field.onChange(category.id)}
+                      >
+                        <Ionicons
+                          name={category.icon}
+                          size={20}
+                          color={isActive ? COLORS.white : COLORS.text}
+                          style={styles.categoryIcon}
+                        />
+                        <Text
+                          style={[
+                            styles.categoryButtonText,
+                            isActive && styles.categoryButtonTextActive,
+                          ]}
+                        >
+                          {category.name}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              )}
+            />
           </View>
         </View>
       </View>

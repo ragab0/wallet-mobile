@@ -96,6 +96,7 @@ export const styles = StyleSheet.create({
     fontSize: SIZES.x2Large + 4,
     fontFamily: FONTS.bold,
     color: COLORS.text,
+    zIndex: 1,
   },
   titleContainer: {
     flexDirection: "row",

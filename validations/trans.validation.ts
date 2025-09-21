@@ -1,13 +1,14 @@
-import { Category, Icon } from "@/types/trans";
+import { TransType } from "@/types/trans";
 import * as yup from "yup";
 
-const categorySchema: yup.ObjectSchema<Category> = yup.object({
-  id: yup.string().required("Category ID is required"),
-  name: yup.string().required("Category name is required"),
-  icon: yup.mixed<Icon>().required("Category icon is required"),
-});
+// const categorySchema: yup.ObjectSchema<Category> = yup.object({
+//   id: yup.string().required("Category ID is required"),
+//   name: yup.string().required("Category name is required"),
+//   icon: yup.mixed<Icon>().required("Category icon is required"),
+// });
 
 export const createTransSchema = yup.object({
+  userId: yup.string().required("User ID is required"),
   amount: yup
     .string()
     .required("Amount is required")
@@ -34,11 +35,11 @@ export const createTransSchema = yup.object({
     .trim(),
 
   type: yup
-    .string()
+    .string<TransType>()
     .required("Type is required")
     .oneOf(["expense", "income"], "Type must be either expense or income"),
 
-  category: categorySchema.required("Category is required").nullable(),
+  category: yup.string().required("Category is required"),
 
   note: yup
     .string()
