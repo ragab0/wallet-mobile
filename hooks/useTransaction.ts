@@ -1,4 +1,4 @@
-import { transactionsService } from "@/services/transactions.service";
+import { transactionsService } from "@/services/transaction.service";
 import { AppError } from "@/types/error";
 import { CreateTransForm, Trans } from "@/types/trans";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

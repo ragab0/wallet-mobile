@@ -1,5 +1,4 @@
 import { authService } from "@/services/auth.service";
-import { usersService } from "@/services/users.service";
 import {
   LoginRequest,
   SendVerifyEmailRequest,
@@ -8,10 +7,9 @@ import {
 } from "@/types/auth";
 import { AppError } from "@/types/error";
 import { clearTokens, saveTokens } from "@/utils/tokenStorage";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-
-/** QUERIES */
+import { useCurrentUser, userKeys } from "./useUser";
 
 export const useAuth = () => {
   const { data: user, isLoading, isError, refetch } = useCurrentUser();
@@ -24,16 +22,6 @@ export const useAuth = () => {
   };
 };
 
-export function useCurrentUser() {
-  return useQuery({
-    queryKey: ["currentUser"],
-    queryFn: () => usersService.getCurrentUser(),
-    staleTime: Infinity,
-    retry: 1,
-    enabled: true,
-  });
-}
-
 /** MUTATIONS (login/signup & emails) */
 
 export function useLogin() {
@@ -42,7 +30,7 @@ export function useLogin() {
     mutationFn: (userData: LoginRequest) => authService.login(userData),
     onSuccess: async function ({ accessToken, refreshToken, data: user }) {
       await saveTokens(accessToken, refreshToken);
-      queryClient.setQueryData(["currentUser"], user);
+      queryClient.setQueryData(userKeys.current(), user);
       router.replace("/(tabs)");
     },
     onError: (error: AppError) => {
@@ -101,7 +89,7 @@ export function useVerifyCode() {
       authService.verifyCode(userData),
     onSuccess: async function ({ accessToken, refreshToken, data: user }) {
       await saveTokens(accessToken, refreshToken);
-      queryClient.setQueryData(["currentUser"], user);
+      queryClient.setQueryData(userKeys.current(), user);
       router.replace("/(tabs)");
     },
     onError: (error: AppError) => {
