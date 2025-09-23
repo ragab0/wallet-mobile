@@ -1,4 +1,4 @@
-import { COLORS } from "@/constants/theme";
+import { COLORS, FONTS, SIZES } from "@/constants/theme";
 import { useLogout } from "@/hooks/useAuth";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
@@ -6,10 +6,17 @@ import {
   ActivityIndicator,
   Alert,
   StyleSheet,
+  Text,
   TouchableOpacity,
+  ViewStyle,
 } from "react-native";
 
-export function LogoutButton() {
+type props = {
+  style?: ViewStyle;
+  showText?: boolean;
+};
+
+export function LogoutButton({ style, showText = false }: props) {
   const { isPending: isLoading, mutate } = useLogout();
 
   function handleLogout() {
@@ -28,7 +35,7 @@ export function LogoutButton() {
 
   return (
     <TouchableOpacity
-      style={[styles.button, isLoading && styles.disabled]}
+      style={[styles.button, style, isLoading && styles.disabled]}
       onPress={handleLogout}
       disabled={isLoading}
       activeOpacity={0.7}
@@ -36,7 +43,10 @@ export function LogoutButton() {
       {isLoading ? (
         <ActivityIndicator size="small" />
       ) : (
-        <Ionicons name="log-out-outline" size={20} color={COLORS.text} />
+        <>
+          <Ionicons name="log-out-outline" size={20} color={COLORS.expense} />
+          {showText && <Text style={styles.text}>Logout</Text>}
+        </>
       )}
     </TouchableOpacity>
   );
@@ -44,6 +54,9 @@ export function LogoutButton() {
 
 const styles = StyleSheet.create({
   button: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 10,
     borderRadius: 20,
     backgroundColor: COLORS.card,
@@ -52,6 +65,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
+  },
+  text: {
+    fontSize: SIZES.default,
+    fontFamily: FONTS.medium,
+    color: COLORS.expense,
+    marginLeft: 8,
   },
   disabled: {
     opacity: 0.6,

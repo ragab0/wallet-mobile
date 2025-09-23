@@ -1,3 +1,4 @@
+import { COLORS, FONTS, SIZES } from "@/constants/theme";
 import { FontAwesome } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
@@ -5,31 +6,38 @@ export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: "blue",
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: COLORS.white,
+          borderTopColor: COLORS.border,
+          borderTopWidth: 1,
+          height: 70,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
+        tabBarActiveTintColor: COLORS.primary,
+        tabBarInactiveTintColor: COLORS.textLight,
+        tabBarLabelStyle: {
+          fontFamily: FONTS.semiBold,
+          fontSize: SIZES.medium - 2,
+        },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
+          title: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome size={size} name="home" color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="account"
         options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="cog" color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="user" color={color} />
+          title: "Account",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome size={size} name="user" color={color} />
           ),
         }}
       />

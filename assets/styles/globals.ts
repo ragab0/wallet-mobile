@@ -1,0 +1,28 @@
+import { COLORS, FONTS, SIZES } from "@/constants/theme";
+import { StyleSheet } from "react-native";
+
+export const shadows = StyleSheet.create({
+  shadowCard: {
+    shadowColor: COLORS.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+});
+
+export const globals = StyleSheet.create({
+  card: {
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    ...shadows.shadowCard,
+  },
+  sectionTitle: {
+    fontSize: SIZES.large,
+    fontFamily: FONTS.semiBold,
+    color: COLORS.text,
+    marginBottom: 16,
+  },
+});
