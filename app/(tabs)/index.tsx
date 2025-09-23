@@ -1,17 +1,28 @@
 import Logo from "@/assets/images/logo.png";
 import { styles } from "@/assets/styles/home.styles";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { LogoutButton } from "@/components/LogOutBtn";
 import TransItem from "@/components/TransItem";
 import TransesNotFound from "@/components/TransNotFound";
-import { summary, transactions, user } from "@/constants/mockApi";
 import { COLORS } from "@/constants/theme";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  useGetAllTransactionsMine,
+  useGetTransactionsSummary,
+} from "@/hooks/useTransaction";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
-const handleDelete = () => {};
+export default function Home() {
+  const { user, error } = useAuth();
+  const { isPending: isLoading, data: transactions } =
+    useGetAllTransactionsMine();
+  const { data: summary } = useGetTransactionsSummary();
 
-export default function index() {
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <Text>Error</Text>;
+
   return (
     <View style={styles.container}>
       {/* header */}
@@ -21,7 +32,7 @@ export default function index() {
           <Image source={Logo} style={styles.headerLogo} />
           <View style={styles.welcomeContainer}>
             <Text style={styles.welcomeText}>Welcome,</Text>
-            <Text style={styles.usernameText}>{user.fname}</Text>
+            <Text style={styles.usernameText}>{user?.fname}</Text>
           </View>
         </View>
         {/* header side */}
@@ -42,20 +53,20 @@ export default function index() {
       <View style={styles.balanceCard}>
         <Text style={styles.balanceTitle}>Total Balance</Text>
         <Text style={styles.balanceAmount}>
-          ${parseFloat(summary.balance).toFixed(2)}
+          ${summary?.totalBalance.toFixed(2)}
         </Text>
         <View style={styles.balanceStats}>
           <View style={styles.balanceStatItem}>
             <Text style={styles.balanceStatLabel}>Income</Text>
             <Text style={[styles.balanceStatAmount, { color: COLORS.income }]}>
-              +${parseFloat(summary.income).toFixed(2)}
+              +${(summary?.totalIncome || 0).toFixed(2)}
             </Text>
           </View>
           <View style={[styles.balanceStatItem, styles.statDivider]} />
           <View style={styles.balanceStatItem}>
             <Text style={styles.balanceStatLabel}>Expenses</Text>
             <Text style={[styles.balanceStatAmount, { color: COLORS.expense }]}>
-              -${Math.abs(parseFloat(summary.expenses)).toFixed(2)}
+              -${Math.abs(summary?.totalExpenses || 0).toFixed(2)}
             </Text>
           </View>
         </View>
@@ -66,9 +77,7 @@ export default function index() {
       <FlatList
         contentContainerStyle={styles.transesListContent}
         data={transactions}
-        renderItem={({ item }) => (
-          <TransItem item={item} onDelete={handleDelete} />
-        )}
+        renderItem={({ item }) => <TransItem item={item} />}
         ListEmptyComponent={<TransesNotFound />}
         showsVerticalScrollIndicator={false}
       />

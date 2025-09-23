@@ -1,13 +1,11 @@
 import { createTransSchema } from "@/validations/trans.validation";
-import { Ionicons } from "@expo/vector-icons";
 import * as yup from "yup";
-
-export type Icon = keyof typeof Ionicons.glyphMap;
+import { IonicIconType } from "./globals";
 
 export interface Category {
   id: string;
   name: string;
-  icon: Icon;
+  icon: IonicIconType;
 }
 
 export type TransType = "expense" | "income";

@@ -1,6 +1,6 @@
 import { Trans } from "@/types/trans";
 
-export const user = {
+const user = {
   emailAddress: "ragab.dev@gmail.com",
   fname: "ragab",
 };
