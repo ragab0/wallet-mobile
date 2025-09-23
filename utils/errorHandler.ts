@@ -22,7 +22,7 @@ export class ErrorHandler {
         type: "NETWORK_ERROR",
         message: "Connection failed",
         details:
-          "Unable to connect. Please check your connection and try again.",
+          "Unable to connect to the server. Please check your internet connection and try again.",
         retryable: true,
       };
     }
@@ -30,10 +30,9 @@ export class ErrorHandler {
     if (error.response) {
       const status = error.response.status;
       const data = error.response.data as HttpRedirectResponse | undefined;
-
       switch (status) {
         case 307:
-          data?.redirectTo &&
+          if (data?.redirectTo) {
             router.push({
               pathname: data.redirectTo,
               params: {
@@ -41,10 +40,11 @@ export class ErrorHandler {
                 payload: JSON.stringify(data.payload),
               },
             });
+          }
           return {
             type: "REDIRECT_ERROR",
             message: data?.message || "Redirection required",
-            details: "",
+            details: "You are being redirected.",
             statusCode: 307,
             retryable: false,
           };
@@ -56,7 +56,7 @@ export class ErrorHandler {
           return {
             type: "AUTHENTICATION_ERROR",
             message: "Authentication failed",
-            details: data?.message || "Unauthorized request",
+            details: data?.message || "Please log in to continue.",
             statusCode: 401,
             retryable: false,
           };
@@ -72,11 +72,32 @@ export class ErrorHandler {
 
         case 404:
           return {
-            type: "SERVER_ERROR",
-            message: "Service unavailable",
-            details: "The requested service could not be found.",
-            statusCode: status,
+            type: "CLIENT_ERROR",
+            message: "Resource not found",
+            details:
+              data?.message || "The requested resource could not be found.",
+            statusCode: 404,
             retryable: false,
+          };
+
+        case 409:
+          return {
+            type: "VALIDATION_ERROR",
+            message: "Conflict",
+            details:
+              data?.message || "This action conflicts with existing data.",
+            statusCode: 409,
+            retryable: false,
+          };
+
+        case 429:
+          return {
+            type: "RATE_LIMIT_ERROR",
+            message: "Too many requests",
+            details:
+              "You've made too many requests. Please wait a moment and try again.",
+            statusCode: 429,
+            retryable: true,
           };
 
         case 500:
@@ -98,16 +119,16 @@ export class ErrorHandler {
             message: "Something went wrong",
             details: "An unexpected error occurred. Please try again.",
             statusCode: status,
-            retryable: true,
+            retryable: status >= 500,
           };
       }
     }
 
     // no response
     return {
-      type: "UNKNOWN_ERROR",
-      message: error.message || "Something went wrong",
-      details: "An unexpected error occurred. Please try again.",
+      type: "NETWORK_ERROR",
+      message: "No response from server",
+      details: "The server is not responding. Please try again later.",
       retryable: true,
     };
   }
@@ -116,7 +137,7 @@ export class ErrorHandler {
     if (Array.isArray(data.message)) {
       const messages = data.message;
       const primaryMessage = messages[0] || "Invalid input";
-      const allMessages = messages.join(" - ");
+      const allMessages = messages.join(" • ");
       return {
         type: "VALIDATION_ERROR",
         message: primaryMessage,
@@ -154,6 +175,10 @@ export class ErrorHandler {
         return "lock-closed";
       case "TIMEOUT_ERROR":
         return "time-outline";
+      case "RATE_LIMIT_ERROR":
+        return "hourglass";
+      case "CLIENT_ERROR":
+        return "file-x";
       default:
         return "alert-circle";
     }
@@ -171,6 +196,10 @@ export class ErrorHandler {
         return "#EF4444";
       case "TIMEOUT_ERROR":
         return "#8B5CF6";
+      case "RATE_LIMIT_ERROR":
+        return "#F59E0B";
+      case "CLIENT_ERROR":
+        return "#6B7280";
       default:
         return "#EF4444";
     }
