@@ -1,4 +1,6 @@
 import { COLORS, FONTS, SIZES } from "@/constants/theme";
+import { CATEGORIES_INDEXED } from "@/constants/trans";
+import { useDeleteTransaction } from "@/hooks/useTransaction";
 import { Trans } from "@/types/trans";
 import { formatDate } from "@/utils/formatDate";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,26 +8,30 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type props = {
   item: Trans;
-  onDelete: (id: string) => void;
 };
 
-export default function TransaItem({ item, onDelete }: props) {
-  const isIncome = parseFloat(item.amount) > 0;
-  const iconName = item.category.icon || "pricetag-outline";
+export default function TransaItem({ item }: props) {
+  const isIncome = item.type === "income";
+  const { name, icon } = CATEGORIES_INDEXED[item.category];
+  const { mutate: deleteTrans } = useDeleteTransaction();
+
+  function handleDelete(id: string) {
+    deleteTrans(id);
+  }
 
   return (
     <View style={styles.transCard}>
       <TouchableOpacity style={styles.transContent}>
         <View style={styles.categoryIconContainer}>
           <Ionicons
-            name={iconName as any}
+            name={icon}
             size={22}
             color={isIncome ? COLORS.income : COLORS.expense}
           />
         </View>
         <View style={styles.transLeft}>
           <Text style={styles.transTitle}>{item.title}</Text>
-          <Text style={styles.transCategory}>{item.category.name}</Text>
+          <Text style={styles.transCategory}>{name}</Text>
         </View>
         <View style={styles.transRight}>
           <Text
@@ -42,7 +48,7 @@ export default function TransaItem({ item, onDelete }: props) {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.deleteButton}
-        onPress={() => onDelete(item.id)}
+        onPress={() => handleDelete(item.id)}
       >
         <Ionicons name="trash-outline" size={20} color={COLORS.expense} />
       </TouchableOpacity>

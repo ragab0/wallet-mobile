@@ -10,13 +10,15 @@ export interface Category {
   icon: Icon;
 }
 
+export type TransType = "expense" | "income";
+
 export interface Trans {
   id: string;
   userId: string;
   amount: string;
   title: string;
-  type: string;
-  category: string; // category.id
+  type: TransType;
+  category: string;
   note?: string;
   createdAt: string;
   updatedAt: string;
@@ -26,4 +28,9 @@ export interface Trans {
 export type CreateTransForm = yup.InferType<typeof createTransSchema> & {
   userId?: string;
 };
-export type TransType = "expense" | "income";
+
+export interface Summary {
+  totalIncome: number;
+  totalExpenses: number;
+  totalBalance: number;
+}

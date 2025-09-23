@@ -1,9 +1,14 @@
 import { apiClient } from "@/configs/apiClient";
-import { CreateTransForm, Trans } from "@/types/trans";
+import { CreateTransForm, Summary, Trans } from "@/types/trans";
 
 export const transactionsService = {
   getAllMine: async function () {
     const response = await apiClient.get<Trans[]>(`/transactions/`);
+    return response.data;
+  },
+
+  getSummary: async function () {
+    const response = await apiClient.get<Summary>(`/transactions/summary`);
     return response.data;
   },
 
@@ -26,7 +31,7 @@ export const transactionsService = {
   },
 
   delete: async function (id: string) {
-    await apiClient.patch<Trans>(`/transactions/${id}`);
+    await apiClient.delete<Trans>(`/transactions/${id}`);
     return true;
   },
 };
