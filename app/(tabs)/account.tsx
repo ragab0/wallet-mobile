@@ -1,11 +1,12 @@
 import { styles } from "@/assets/styles/account.styles";
-import { globals } from "@/assets/styles/globals";
+import { globals } from "@/assets/styles/globals.styles";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { LogoutButton } from "@/components/LogOutBtn";
 import SectionOptions from "@/components/SectionOptions";
-import { accountManagmentOptions, InfoOptions } from "@/constants/account";
+import { accountManagmentOptions } from "@/constants/account";
 import { COLORS } from "@/constants/theme";
 import { useCurrentUser } from "@/hooks/useUser";
+import { formatDate } from "@/utils/formatDate";
 import { Ionicons } from "@expo/vector-icons";
 import { Image, ScrollView, Text, View } from "react-native";
 
@@ -17,8 +18,8 @@ export default function AccountScreen() {
   }
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.container}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+      <View style={globals.container}>
         {/* header */}
         <View style={styles.profileHeader}>
           {/* header image */}
@@ -61,7 +62,6 @@ export default function AccountScreen() {
           title="Account Management"
           options={accountManagmentOptions}
         />
-        <SectionOptions title="Support & Info" options={InfoOptions} />
 
         {/* Logout Button */}
         <LogoutButton style={globals.card} showText={true} />
@@ -69,7 +69,7 @@ export default function AccountScreen() {
         {/* Account Info */}
         <View style={styles.accountInfo}>
           <Text style={styles.memberSinceText}>
-            Member since {new Date(user?.createdAt || "").toLocaleDateString()}
+            Member since {formatDate(user?.createdAt) || "a long time"}
           </Text>
         </View>
       </View>

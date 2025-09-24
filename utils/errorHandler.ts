@@ -1,4 +1,5 @@
 import type { AppError, ErrorType } from "@/types/error";
+import { IonicIconType } from "@/types/globals";
 import { HttpRedirectResponse } from "@/types/http";
 import { AxiosError } from "axios";
 import { router } from "expo-router";
@@ -163,7 +164,7 @@ export class ErrorHandler {
       };
   }
 
-  static getErrorIcon(errorType: ErrorType): string {
+  static getErrorIcon(errorType: ErrorType): IonicIconType {
     switch (errorType) {
       case "NETWORK_ERROR":
         return "wifi";
@@ -178,7 +179,7 @@ export class ErrorHandler {
       case "RATE_LIMIT_ERROR":
         return "hourglass";
       case "CLIENT_ERROR":
-        return "file-x";
+        return "file-tray";
       default:
         return "alert-circle";
     }

@@ -12,6 +12,11 @@ export const shadows = StyleSheet.create({
 });
 
 export const globals = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "COLORS.background",
+  },
   card: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
@@ -24,5 +29,9 @@ export const globals = StyleSheet.create({
     fontFamily: FONTS.semiBold,
     color: COLORS.text,
     marginBottom: 16,
+  },
+  disabledButton: {
+    backgroundColor: COLORS.textLight,
+    opacity: 0.6,
   },
 });

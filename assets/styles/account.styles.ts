@@ -1,14 +1,8 @@
 import { COLORS, FONTS, SIZES } from "@/constants/theme";
 import { StyleSheet } from "react-native";
-import { globals } from "./globals";
+import { globals } from "./globals.styles";
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: COLORS.background,
-  },
-
   // header
   profileHeader: {
     ...globals.card,

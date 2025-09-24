@@ -1,5 +1,6 @@
 import { COLORS, FONTS, SIZES } from "@/constants/theme";
 import { StyleSheet } from "react-native";
+import { globals } from "./globals.styles";
 
 export const styles = StyleSheet.create({
   container: {
@@ -56,18 +57,10 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.semiBold,
   },
   balanceCard: {
+    ...globals.card,
     gap: 10,
-    backgroundColor: COLORS.card,
     borderRadius: 20,
-    padding: 20,
-    shadowColor: COLORS.shadow,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+    marginBottom: 10,
   },
   balanceTitle: {
     fontSize: SIZES.default,

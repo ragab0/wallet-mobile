@@ -1,10 +1,6 @@
-import {
-  ChangePasswordData,
-  UpdateUserData,
-  usersService,
-} from "@/services/user.service";
+import { usersService } from "@/services/user.service";
 import { AppError } from "@/types/error";
-import { User } from "@/types/user";
+import { ChangePasswordData, UpdateUserData, User } from "@/types/user";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Query Keys
@@ -13,17 +9,19 @@ export const userKeys = {
   current: () => [...userKeys.all, "current"] as const,
 };
 
-/** Mutations */
+/** Quiries */
 
 export function useCurrentUser() {
   return useQuery({
-    queryKey: ["currentUser"],
+    queryKey: userKeys.current(),
     queryFn: usersService.getCurrentUser,
     staleTime: Infinity,
     retry: 1,
     enabled: true,
   });
 }
+
+/** Mutations */
 
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
@@ -47,10 +45,10 @@ export const useChangePassword = () => {
   });
 };
 
-export const useUploadAvatar = () => {
+export const useUploadPicture = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData: FormData) => usersService.uploadAvatar(formData),
+    mutationFn: (formData: FormData) => usersService.uploadPicture(formData),
     onSuccess: (updatedUser: User) => {
       queryClient.setQueryData(userKeys.current(), updatedUser);
     },

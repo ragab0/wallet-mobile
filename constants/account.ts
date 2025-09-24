@@ -22,16 +22,6 @@ export const accountManagmentOptions: SectionOptions[] = [
 export const InfoOptions: SectionOptions[] = [
   {
     action: () => {},
-    iconName: "help-circle-outline",
-    title: "Help & Support",
-  },
-  {
-    action: () => {},
-    iconName: "document-text-outline",
-    title: "Privacy Policy",
-  },
-  {
-    action: () => {},
     iconName: "information-circle-outline",
     title: "About App",
   },

@@ -1,4 +1,4 @@
-import { globals } from "@/assets/styles/globals";
+import { globals } from "@/assets/styles/globals.styles";
 import { COLORS, FONTS, SIZES } from "@/constants/theme";
 import { SectionOptions as SectionOptionsTypes } from "@/types/globals";
 import { Ionicons } from "@expo/vector-icons";
