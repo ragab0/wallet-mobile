@@ -193,9 +193,9 @@ export default function EditProfileScreen() {
         {/* Form Section */}
         <View style={[globals.card]}>
           <Text style={globals.sectionTitle}>Personal Information</Text>
-          <View style={styles.groups}>
+          <View style={globals.groups}>
             <View>
-              <Text style={styles.inputLabel}>First Name</Text>
+              <Text style={globals.inputLabel}>First Name</Text>
               <FormField
                 control={control}
                 name="fname"
@@ -205,7 +205,7 @@ export default function EditProfileScreen() {
               />
             </View>
             <View>
-              <Text style={styles.inputLabel}>Last Name</Text>
+              <Text style={globals.inputLabel}>Last Name</Text>
               <FormField
                 control={control}
                 name="lname"
@@ -215,12 +215,12 @@ export default function EditProfileScreen() {
               />
             </View>
             <View>
-              <Text style={styles.inputLabel}>Email</Text>
+              <Text style={globals.inputLabel}>Email</Text>
               <TextInput value={user?.email} editable={false} />
               <Text></Text>
             </View>
             <View>
-              <Text style={styles.inputLabel}>Role</Text>
+              <Text style={globals.inputLabel}>Role</Text>
               <TextInput value={user?.role} editable={false} />
               <Text></Text>
             </View>

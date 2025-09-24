@@ -34,4 +34,13 @@ export const globals = StyleSheet.create({
     backgroundColor: COLORS.textLight,
     opacity: 0.6,
   },
+  groups: {
+    gap: 10,
+  },
+  inputLabel: {
+    fontSize: SIZES.default,
+    fontFamily: FONTS.medium,
+    color: COLORS.text,
+    marginBottom: 8,
+  },
 });

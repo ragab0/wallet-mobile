@@ -7,7 +7,7 @@ export const profileSchema = yup.object({
 });
 
 export const passwordSchema = yup.object({
-  currentPassword: password,
+  currentPassword: yup.string().required("Current password is required"),
   newPassword: password,
   confirmPassword: yup
     .string()

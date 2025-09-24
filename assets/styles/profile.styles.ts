@@ -42,16 +42,6 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  groups: {
-    gap: 10,
-  },
-  inputLabel: {
-    fontSize: SIZES.default,
-    fontFamily: FONTS.medium,
-    color: COLORS.text,
-    marginBottom: 8,
-  },
-
   saveButton: {
     flexDirection: "row",
     alignItems: "center",
