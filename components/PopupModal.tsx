@@ -1,4 +1,5 @@
-import { styles } from "@/assets/styles/settings.styles";
+import { createSettingsStyles } from "@/assets/styles/settings.styles";
+import { useThemeColors } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
@@ -15,6 +16,8 @@ export default function PopupModal({
   title,
   children,
 }: props) {
+  const COLORS = useThemeColors();
+  const styles = createSettingsStyles(COLORS);
   return (
     <Modal
       visible={visible}

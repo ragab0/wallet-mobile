@@ -1,116 +1,50 @@
-import { globals } from "@/assets/styles/globals.styles";
-import { styles } from "@/assets/styles/settings.styles";
+import { createGlobalStyles } from "@/assets/styles/globals.styles";
+import { createSettingsStyles } from "@/assets/styles/settings.styles";
 import KeyboardLayout from "@/components/KeyboardLayout";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PopupModal from "@/components/PopupModal";
 import SettingItem from "@/components/SettingItem";
 import SettingSwitch from "@/components/Switch";
-import { AVAILABLE_CURRENCIES, DEFAULT_SETTINGS } from "@/constants/settings";
+import { AVAILABLE_CURRENCIES } from "@/constants/settings";
 import { AVAILABLE_THEMES } from "@/constants/theme";
 import { useLogout } from "@/hooks/useAuth";
-import { useSettingsStorage } from "@/hooks/useSettingsStorage";
 import { useDeleteAccount } from "@/hooks/useUser";
-import { Currency, SettingsFormData } from "@/types/settings";
+import { useSelectedCurrency, useSettingsStore } from "@/stores/settingsStore";
+import { useThemeStore } from "@/stores/themeStore";
+import { Currency } from "@/types/settings";
 import { AppTheme } from "@/types/theme";
-import { settingsSchema } from "@/validations/settings.validation";
+import { handleEmail } from "@/utils/handleEmail";
+import { openPhone } from "@/utils/handlePhone";
 import { Ionicons } from "@expo/vector-icons";
-import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Link } from "expo-router";
+import React from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 export default function SettingsScreen() {
   const { mutate: logout } = useLogout();
   const deleteAccountMutation = useDeleteAccount();
-  const { loadSettings, saveSettings, clearSettings } = useSettingsStorage();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState<AppTheme | null>(null);
-  const [showCurrencyModal, setShowCurrencyModal] = useState(false);
-  const [showThemeModal, setShowThemeModal] = useState(false);
+  const { setTheme, getCurrentTheme } = useThemeStore();
+  const currentTheme = getCurrentTheme();
+  const styles = createSettingsStyles(currentTheme?.colors);
+  const globals = createGlobalStyles(currentTheme?.colors);
   const {
-    control,
-    watch,
-    setValue,
-    handleSubmit,
-    reset,
-    formState: { isDirty },
-  } = useForm<SettingsFormData>({
-    resolver: yupResolver(settingsSchema),
-    defaultValues: DEFAULT_SETTINGS,
-    mode: "onChange",
-  });
-  const watchedValues = watch();
-  const selectedCurrency = AVAILABLE_CURRENCIES.find(
-    (c) => c.code === watchedValues.currency
-  );
-  const selectedTheme = AVAILABLE_THEMES.find(
-    (t) => t.key === watchedValues.theme
-  );
-
-  // Load settings on mount
-  useEffect(() => {
-    initializeSettings();
-  }, []);
-
-  // Auto-save with debouncing
-  useEffect(() => {
-    if (isDirty && !isLoading) {
-      const timeoutId = setTimeout(() => {
-        handleSubmit(onSubmit)();
-      }, 500);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [watchedValues, isDirty, isLoading, handleSubmit]);
-
-  async function initializeSettings() {
-    try {
-      setIsLoading(true);
-      const savedSettings = await loadSettings();
-
-      if (savedSettings) {
-        reset(savedSettings, { keepDefaultValues: false });
-        const theme = AVAILABLE_THEMES.find(
-          (t) => t.key === savedSettings.theme
-        );
-        if (theme) setCurrentTheme(theme);
-      } else {
-        const defaultTheme = AVAILABLE_THEMES.find(
-          (t) => t.key === DEFAULT_SETTINGS.theme
-        );
-        if (defaultTheme) setCurrentTheme(defaultTheme);
-      }
-    } catch (error) {
-      Alert.alert("Error", "Failed to load settings");
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function onSubmit(data: SettingsFormData) {
-    try {
-      setIsSaving(true);
-      await saveSettings(data);
-      const theme = AVAILABLE_THEMES.find((t) => t.key === data.theme);
-      if (theme && theme.key !== currentTheme?.key) {
-        setCurrentTheme(theme);
-        // Emit theme change event or update context here
-        // themeContext.changeTheme(theme);
-      }
-    } catch (error) {
-      Alert.alert("Error", "Failed to save settings");
-    } finally {
-      setIsSaving(false);
-    }
-  }
+    pushNotifications,
+    emailNotifications,
+    setCurrency,
+    setPushNotifications,
+    setEmailNotifications,
+  } = useSettingsStore();
+  const selectedCurrency = useSelectedCurrency();
+  const [showCurrencyModal, setShowCurrencyModal] = React.useState(false);
+  const [showThemeModal, setShowThemeModal] = React.useState(false);
 
   function handleCurrencySelect(currency: Currency) {
-    setValue("currency", currency.code, { shouldDirty: true });
+    setCurrency(currency.code);
     setShowCurrencyModal(false);
   }
 
   function handleThemeSelect(theme: AppTheme) {
-    setValue("theme", theme.key, { shouldDirty: true });
+    setTheme(theme.key);
     setShowThemeModal(false);
   }
 
@@ -141,7 +75,6 @@ export default function SettingsScreen() {
           onPress: async () => {
             try {
               await deleteAccountMutation.mutateAsync();
-              await clearSettings();
               logout();
             } catch (error) {
               Alert.alert(
@@ -155,93 +88,56 @@ export default function SettingsScreen() {
     );
   }
 
+  async function openEmail() {
+    await handleEmail(
+      "GreenWallet Support",
+      "Hello GreenWallet Support Team,\n\n",
+      "Support email has been copied to your clipboard."
+    );
+  }
+
   function supportActions() {
     Alert.alert("Contact Support", "How would you like to contact us?", [
       { text: "Cancel", style: "cancel" },
-      { text: "Email", onPress: () => console.log("Open email support") },
-      { text: "Phone", onPress: () => console.log("Open phone support") },
+      { text: "Email", onPress: openEmail },
+      { text: "Phone", onPress: openPhone },
     ]);
   }
+  async function reportBug() {
+    await handleEmail(
+      "GreenWallet Bug Report",
+      "Hello GreenWallet Team,\n\nI found an issue in the app. Here are the details:\n\n- Description: \n- Steps to reproduce: \n- Expected behavior: \n- Actual behavior: \n- Device: [Your device model]\n- OS Version: [Your OS version]\n- App Version: [Your app version]\n\n",
+      "Bug report email has been copied to your clipboard."
+    );
+  }
+
   function rateApp() {
     Alert.alert(
       "Rate App",
-      "Thank you for using GreenWallet! This would redirect to the app store."
-    );
-  }
-  function reportBug() {
-    Alert.alert("Report Bug", "This would open the bug report form.");
-  }
-
-  if (isLoading) {
-    return (
-      <View
-        style={[
-          globals.container,
-          { justifyContent: "center", alignItems: "center" },
-        ]}
-      >
-        <LoadingSpinner size="large" color="#8B593E" />
-        <Text style={{ marginTop: 10, color: "#8B593E" }}>
-          Loading settings...
-        </Text>
-      </View>
+      // "Thank you for using GreenWallet! This would redirect to the app store."
+      "Thank you for using GreenWallet! This app will be available soon the app store."
     );
   }
 
   return (
     <KeyboardLayout>
       <View style={globals.container}>
-        {/* Save Status Indicator */}
-        {(isDirty || isSaving) && (
-          <View style={styles.formStatus}>
-            {isSaving ? (
-              <>
-                <LoadingSpinner size="small" color="#8B593E" />
-                <Text style={[styles.formStatusText, styles.formStatusUnsaved]}>
-                  Saving...
-                </Text>
-              </>
-            ) : (
-              <>
-                <Ionicons name="time-outline" size={16} color="#E74C3C" />
-                <Text style={[styles.formStatusText, styles.formStatusUnsaved]}>
-                  Unsaved changes
-                </Text>
-              </>
-            )}
-          </View>
-        )}
-
         {/* Notifications Section */}
         <View style={globals.card}>
           <Text style={globals.sectionTitle}>Notifications</Text>
-          <Controller
-            control={control}
-            name="pushNotifications"
-            render={({ field: { value, onChange } }) => (
-              <SettingSwitch
-                icon="notifications-outline"
-                title="Push Notifications"
-                subtitle="Receive notifications for transactions and updates"
-                value={value}
-                onValueChange={onChange}
-                disabled={isSaving}
-              />
-            )}
+          <SettingSwitch
+            icon="notifications-outline"
+            title="Push Notifications"
+            subtitle="Receive notifications for transactions and updates"
+            value={pushNotifications}
+            onValueChange={setPushNotifications}
           />
-          <Controller
-            control={control}
-            name="emailNotifications"
-            render={({ field: { value, onChange } }) => (
-              <SettingSwitch
-                icon="mail-outline"
-                title="Email Notifications"
-                subtitle="Receive email updates and summaries"
-                value={value}
-                onValueChange={onChange}
-                disabled={isSaving}
-              />
-            )}
+          <SettingSwitch
+            icon="mail-outline"
+            title="Email Notifications"
+            subtitle="Receive email updates and summaries"
+            value={emailNotifications}
+            onValueChange={setEmailNotifications}
           />
         </View>
 
@@ -252,19 +148,18 @@ export default function SettingsScreen() {
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => setShowThemeModal(true)}
-            disabled={isSaving}
           >
             <View style={styles.settingItemLeft}>
               <View
                 style={[
                   styles.themeColorPreview,
-                  { backgroundColor: selectedTheme?.primaryColor || "#8B593E" },
+                  { backgroundColor: currentTheme?.primaryColor || "#8B593E" },
                 ]}
               />
               <View style={styles.settingItemText}>
                 <Text style={styles.settingItemTitle}>Theme</Text>
                 <Text style={styles.settingItemSubtitle}>
-                  {selectedTheme?.name} - {selectedTheme?.description}
+                  {currentTheme?.name} - {currentTheme?.description}
                 </Text>
               </View>
             </View>
@@ -274,10 +169,13 @@ export default function SettingsScreen() {
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => setShowCurrencyModal(true)}
-            disabled={isSaving}
           >
             <View style={styles.settingItemLeft}>
-              <Ionicons name="card-outline" size={20} color="#8B593E" />
+              <Ionicons
+                name="card-outline"
+                size={20}
+                color={currentTheme?.colors.primary}
+              />
               <View style={styles.settingItemText}>
                 <Text style={styles.settingItemTitle}>Currency</Text>
                 <Text style={styles.settingItemSubtitle}>
@@ -285,7 +183,11 @@ export default function SettingsScreen() {
                 </Text>
               </View>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#9A8478" />
+            <Ionicons
+              name="chevron-forward"
+              size={20}
+              color={currentTheme?.colors.textLight}
+            />
           </TouchableOpacity>
         </View>
 
@@ -315,12 +217,18 @@ export default function SettingsScreen() {
         {/* App Info Section */}
         <View style={globals.card}>
           <Text style={globals.sectionTitle}>About</Text>
-
           <SettingItem
             icon="information-circle-outline"
             title="App Version"
             subtitle="1.0.0 (Build 100)"
           />
+          <Text style={styles.builtWith}>
+            Made With Love By{" "}
+            <Link href="https://ragab.vercel.app" style={styles.builtBy}>
+              Ragab
+            </Link>{" "}
+            © 2025
+          </Text>
         </View>
 
         {/* Danger Zone */}
@@ -359,7 +267,7 @@ export default function SettingsScreen() {
               key={currency.code}
               style={[
                 styles.modalOption,
-                watchedValues.currency === currency.code &&
+                currency.code === selectedCurrency?.code &&
                   styles.modalOptionSelected,
               ]}
               onPress={() => handleCurrencySelect(currency)}
@@ -373,8 +281,12 @@ export default function SettingsScreen() {
                   </Text>
                 </View>
               </View>
-              {watchedValues.currency === currency.code && (
-                <Ionicons name="checkmark" size={20} color="#8B593E" />
+              {currency.code === selectedCurrency?.code && (
+                <Ionicons
+                  name="checkmark"
+                  size={20}
+                  color={currentTheme?.colors.primary}
+                />
               )}
             </TouchableOpacity>
           ))}
@@ -391,7 +303,7 @@ export default function SettingsScreen() {
               key={theme.key}
               style={[
                 styles.modalOption,
-                watchedValues.theme === theme.key && styles.modalOptionSelected,
+                currentTheme?.key === theme.key && styles.modalOptionSelected,
               ]}
               onPress={() => handleThemeSelect(theme)}
             >
@@ -409,7 +321,7 @@ export default function SettingsScreen() {
                   </Text>
                 </View>
               </View>
-              {watchedValues.theme === theme.key && (
+              {currentTheme?.key === theme.key && (
                 <Ionicons name="checkmark" size={20} color="#8B593E" />
               )}
             </TouchableOpacity>
