@@ -1,6 +1,7 @@
-import { COLORS, FONTS, SIZES } from "@/constants/theme";
+import { FONTS, SIZES } from "@/constants/theme";
 import { CATEGORIES_INDEXED } from "@/constants/trans";
 import { useDeleteTransaction } from "@/hooks/useTransaction";
+import { useThemeColors } from "@/stores/themeStore";
 import { Trans } from "@/types/trans";
 import { formatDate } from "@/utils/formatDate";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,9 +9,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type props = {
   item: Trans;
+  symbol: string;
 };
 
-export default function TransaItem({ item }: props) {
+export default function TransaItem({ item, symbol }: props) {
+  const COLORS = useThemeColors();
+  const styles = createStyles(COLORS);
+
   const isIncome = item.type === "income";
   const { name, icon } = CATEGORIES_INDEXED[item.category];
   const { mutate: deleteTrans } = useDeleteTransaction();
@@ -40,7 +45,8 @@ export default function TransaItem({ item }: props) {
               { color: isIncome ? COLORS.income : COLORS.expense },
             ]}
           >
-            {isIncome ? "+" : "-"}$
+            {isIncome ? "+" : "-"}
+            {symbol}
             {Math.abs(parseFloat(item.amount)).toFixed(2)}
           </Text>
           <Text style={styles.transDate}>{formatDate(item.createdAt)}</Text>
@@ -56,65 +62,66 @@ export default function TransaItem({ item }: props) {
   );
 }
 
-const styles = StyleSheet.create({
-  transCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: COLORS.card,
-    borderRadius: 12,
-    shadowColor: COLORS.shadow,
-    shadowOffset: {
-      width: 0,
-      height: 1,
+const createStyles = (COLORS: any) =>
+  StyleSheet.create({
+    transCard: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: COLORS.card,
+      borderRadius: 12,
+      shadowColor: COLORS.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  transContent: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    padding: 15,
-  },
-  categoryIconContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#F5F5F5",
-  },
-  transLeft: {
-    flex: 1,
-    gap: 3,
-  },
-  transTitle: {
-    fontSize: SIZES.default,
-    fontFamily: FONTS.medium,
-    color: COLORS.text,
-    textTransform: "capitalize",
-  },
-  transCategory: {
-    fontSize: SIZES.medium,
-    color: COLORS.textLight,
-  },
-  transRight: {
-    alignItems: "flex-end",
-    gap: 3,
-  },
-  transAmount: {
-    fontSize: SIZES.default,
-    fontFamily: FONTS.semiBold,
-  },
-  transDate: {
-    fontSize: SIZES.small + 3,
-    color: COLORS.textLight,
-  },
-  deleteButton: {
-    padding: 15,
-    borderLeftWidth: 1,
-    borderLeftColor: COLORS.border,
-  },
-});
+    transContent: {
+      flex: 1,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+      padding: 15,
+    },
+    categoryIconContainer: {
+      alignItems: "center",
+      justifyContent: "center",
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: "#F5F5F5",
+    },
+    transLeft: {
+      flex: 1,
+      gap: 3,
+    },
+    transTitle: {
+      fontSize: SIZES.default,
+      fontFamily: FONTS.medium,
+      color: COLORS.text,
+      textTransform: "capitalize",
+    },
+    transCategory: {
+      fontSize: SIZES.medium,
+      color: COLORS.textLight,
+    },
+    transRight: {
+      alignItems: "flex-end",
+      gap: 3,
+    },
+    transAmount: {
+      fontSize: SIZES.default,
+      fontFamily: FONTS.semiBold,
+    },
+    transDate: {
+      fontSize: SIZES.small + 3,
+      color: COLORS.textLight,
+    },
+    deleteButton: {
+      padding: 15,
+      borderLeftWidth: 1,
+      borderLeftColor: COLORS.border,
+    },
+  });

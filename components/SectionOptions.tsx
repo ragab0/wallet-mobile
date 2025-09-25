@@ -1,5 +1,6 @@
-import { globals } from "@/assets/styles/globals.styles";
-import { COLORS, FONTS, SIZES } from "@/constants/theme";
+import { createGlobalStyles } from "@/assets/styles/globals.styles";
+import { FONTS, SIZES } from "@/constants/theme";
+import { useThemeColors } from "@/stores/themeStore";
 import { SectionOptions as SectionOptionsTypes } from "@/types/globals";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
@@ -11,6 +12,10 @@ type props = {
 };
 
 export default function SectionOptions({ options, title }: props) {
+  const COLORS = useThemeColors();
+  const globals = createGlobalStyles(COLORS);
+  const styles = createStyles(COLORS);
+
   return (
     <View style={globals.card}>
       <Text style={globals.sectionTitle}>{title}</Text>
@@ -27,24 +32,25 @@ export default function SectionOptions({ options, title }: props) {
   );
 }
 
-const styles = StyleSheet.create({
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
-  },
-  menuItemLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  menuItemText: {
-    fontSize: SIZES.default,
-    fontFamily: FONTS.regular,
-    color: COLORS.text,
-    marginLeft: 12,
-  },
-});
+const createStyles = (COLORS: any) =>
+  StyleSheet.create({
+    menuItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingVertical: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: COLORS.border,
+    },
+    menuItemLeft: {
+      flexDirection: "row",
+      alignItems: "center",
+      flex: 1,
+    },
+    menuItemText: {
+      fontSize: SIZES.default,
+      fontFamily: FONTS.regular,
+      color: COLORS.text,
+      marginLeft: 12,
+    },
+  });

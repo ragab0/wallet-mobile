@@ -1,5 +1,5 @@
 import { styles as authStyles, styles } from "@/assets/styles/auth.styles";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/stores/themeStore";
 import React from "react";
 import { Control, Controller, FieldError } from "react-hook-form";
 import { Text, TextInput, View } from "react-native";
@@ -29,6 +29,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   inputStyle,
   saveErrorSpace = true,
 }) => {
+  const COLORS = useThemeColors();
   return (
     <View>
       <Controller

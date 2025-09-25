@@ -1,6 +1,5 @@
-// @/components/SettingItem.tsx
-import { styles } from "@/assets/styles/settings.styles";
-import { COLORS } from "@/constants/theme";
+import { createSettingsStyles } from "@/assets/styles/settings.styles";
+import { useThemeColors } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -18,11 +17,13 @@ const SettingItem: React.FC<SettingItemProps> = ({
   subtitle,
   onPress,
 }) => {
+  const COLORS = useThemeColors();
+  const styles = createSettingsStyles(COLORS);
   return (
     <TouchableOpacity
       style={styles.settingItem}
       onPress={onPress}
-      activeOpacity={0.7}
+      activeOpacity={onPress ? 0.7 : 1}
     >
       <View style={styles.settingItemLeft}>
         <Ionicons name={icon as any} size={20} color={COLORS.primary} />
@@ -31,9 +32,11 @@ const SettingItem: React.FC<SettingItemProps> = ({
           <Text style={styles.settingItemSubtitle}>{subtitle}</Text>
         </View>
       </View>
-      <View style={styles.settingItemRight}>
-        <Ionicons name="chevron-forward" size={20} color={COLORS.primary} />
-      </View>
+      {onPress && (
+        <View style={styles.settingItemRight}>
+          <Ionicons name="chevron-forward" size={20} color={COLORS.primary} />
+        </View>
+      )}
     </TouchableOpacity>
   );
 };

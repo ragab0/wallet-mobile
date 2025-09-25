@@ -1,16 +1,16 @@
-import { globals } from "@/assets/styles/globals.styles";
-import { styles } from "@/assets/styles/profile.styles";
+import { createGlobalStyles } from "@/assets/styles/globals.styles";
+import { createProfileStyles } from "@/assets/styles/profile.styles";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { FormField } from "@/components/FormField";
 import KeyboardLayout from "@/components/KeyboardLayout";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { SuccessAlert } from "@/components/SuccessAlert";
-import { COLORS } from "@/constants/theme";
 import {
   useCurrentUser,
   useUpdateProfile,
   useUploadPicture,
 } from "@/hooks/useUser";
+import { useThemeColors } from "@/stores/themeStore";
 import { AppError } from "@/types/error";
 import { UpdateUserData } from "@/types/user";
 import { profileSchema } from "@/validations/account.validation";
@@ -30,6 +30,10 @@ import {
 } from "react-native";
 
 export default function EditProfileScreen() {
+  const COLORS = useThemeColors();
+  const styles = createProfileStyles(COLORS);
+  const globals = createGlobalStyles(COLORS);
+
   const { data: user, isLoading: userLoading } = useCurrentUser();
   const updateProfileMutation = useUpdateProfile();
   const uploadPictureMutation = useUploadPicture();

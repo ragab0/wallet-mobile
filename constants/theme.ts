@@ -73,8 +73,6 @@ const oceanTheme = {
   shadow: "#000000",
 };
 
-// @/constants/settings.ts
-
 export const AVAILABLE_THEMES: AppTheme[] = [
   {
     key: "coffee",
@@ -106,4 +104,5 @@ export const AVAILABLE_THEMES: AppTheme[] = [
   },
 ];
 
+// for static themes;
 export const COLORS = coffeeTheme;

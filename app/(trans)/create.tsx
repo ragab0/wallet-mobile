@@ -1,10 +1,11 @@
-import { styles } from "@/assets/styles/create.styles";
+import { createCreateStyles } from "@/assets/styles/create.styles";
 import { FormField } from "@/components/FormField";
 import KeyboardLayout from "@/components/KeyboardLayout";
-import { COLORS } from "@/constants/theme";
 import { CATEGORIES } from "@/constants/trans";
 import { useAuth } from "@/hooks/useAuth";
 import { useCreateTransaction } from "@/hooks/useTransaction";
+import { useSelectedCurrency } from "@/stores/settingsStore";
+import { useThemeColors } from "@/stores/themeStore";
 import { CreateTransForm, TransType } from "@/types/trans";
 import { createTransSchema } from "@/validations/trans.validation";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,6 +15,10 @@ import { Controller, useForm } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function Create() {
+  const COLORS = useThemeColors();
+  const styles = createCreateStyles(COLORS);
+  const { symbol = "$" } = useSelectedCurrency();
+
   const { user } = useAuth();
   const { isPending: isLoading, mutate } = useCreateTransaction();
   const {
@@ -127,7 +132,7 @@ export default function Create() {
               errors.amount && { borderBottomColor: COLORS.expense },
             ]}
           >
-            <Text style={styles.currencySymbol}>$</Text>
+            <Text style={styles.currencySymbol}>{symbol}</Text>
             <View style={{ flex: 1 }}>
               <FormField
                 control={control}

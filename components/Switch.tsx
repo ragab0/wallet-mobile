@@ -1,4 +1,5 @@
-import { styles } from "@/assets/styles/settings.styles";
+import { createSettingsStyles } from "@/assets/styles/settings.styles";
+import { useThemeColors } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import { Switch, Text, View } from "react-native";
 
@@ -19,6 +20,8 @@ export default function SettingSwitch({
   onValueChange,
   disabled = false,
 }: props) {
+  const COLORS = useThemeColors();
+  const styles = createSettingsStyles(COLORS);
   return (
     <View style={styles.settingItem}>
       <View style={styles.settingItemLeft}>

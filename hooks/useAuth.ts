@@ -12,12 +12,13 @@ import { router } from "expo-router";
 import { useCurrentUser, userKeys } from "./useUser";
 
 export const useAuth = () => {
-  const { data: user, isLoading, isError, refetch } = useCurrentUser();
+  const { data: user, isLoading, isError, refetch, error } = useCurrentUser();
   return {
     user,
     isAuthenticated: !!user && !isError,
     isLoading, // true only on first load (not background load(isFetching))
     isInitialized: !isLoading, // Initialized when not loading
+    error,
     refetch, // Manual refresh
   };
 };

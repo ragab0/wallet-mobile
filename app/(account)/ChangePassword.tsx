@@ -1,11 +1,12 @@
-import { globals } from "@/assets/styles/globals.styles";
-import { styles } from "@/assets/styles/password.styles";
+import { createGlobalStyles } from "@/assets/styles/globals.styles";
+import { createPasswordStyles } from "@/assets/styles/password.styles";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import KeyboardLayout from "@/components/KeyboardLayout";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PasswordField from "@/components/PasswordField";
 import { SuccessAlert } from "@/components/SuccessAlert";
 import { useChangePassword } from "@/hooks/useUser";
+import { useThemeColors } from "@/stores/themeStore";
 import { ChangePasswordData } from "@/types/user";
 import { passwordSchema } from "@/validations/account.validation";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,6 +17,10 @@ import { useForm } from "react-hook-form";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function ChangePasswordScreen() {
+  const COLORS = useThemeColors();
+  const styles = createPasswordStyles(COLORS);
+  const globals = createGlobalStyles(COLORS);
+
   const navigation = useNavigation();
   const changePasswordMutation = useChangePassword();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);

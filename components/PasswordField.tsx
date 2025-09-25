@@ -1,5 +1,5 @@
 import { styles as authStyles } from "@/assets/styles/auth.styles";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Control, Controller, FieldError } from "react-hook-form";
@@ -34,6 +34,7 @@ export default function PasswordField({
   showStrengthIndicator = false,
   autoCapitalize = "none",
 }: props) {
+  const COLORS = useThemeColors();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   function togglePasswordVisibility() {

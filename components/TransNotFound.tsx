@@ -1,10 +1,13 @@
-import { COLORS, FONTS, SIZES } from "@/constants/theme";
+import { FONTS, SIZES } from "@/constants/theme";
+import { useThemeColors } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function TransesNotFound() {
   const router = useRouter();
+  const COLORS = useThemeColors();
+  const styles = createStyles(COLORS);
 
   return (
     <View style={styles.emptyCard}>
@@ -26,49 +29,50 @@ export default function TransesNotFound() {
   );
 }
 
-const styles = StyleSheet.create({
-  emptyCard: {
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 15,
-    backgroundColor: COLORS.card,
-    borderRadius: 16,
-    padding: 30,
-    shadowColor: COLORS.shadow,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  emptyTitle: {
-    textAlign: "center",
-    fontSize: SIZES.large,
-    fontFamily: FONTS.semiBold,
-    color: COLORS.text,
-    marginBottom: 8,
-  },
-  emptyText: {
-    color: COLORS.textLight,
-    fontSize: SIZES.medium,
-    textAlign: "center",
-    lineHeight: 20,
-  },
-  emptyButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: COLORS.primary,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  emptyButtonText: {
-    color: COLORS.white,
-    fontFamily: FONTS.semiBold,
-    marginLeft: 6,
-  },
-});
+const createStyles = (COLORS: any) =>
+  StyleSheet.create({
+    emptyCard: {
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 15,
+      backgroundColor: COLORS.card,
+      borderRadius: 16,
+      padding: 30,
+      shadowColor: COLORS.shadow,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 2,
+    },
+    emptyTitle: {
+      textAlign: "center",
+      fontSize: SIZES.large,
+      fontFamily: FONTS.semiBold,
+      color: COLORS.text,
+      marginBottom: 8,
+    },
+    emptyText: {
+      color: COLORS.textLight,
+      fontSize: SIZES.medium,
+      textAlign: "center",
+      lineHeight: 20,
+    },
+    emptyButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: COLORS.primary,
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      borderRadius: 20,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 3,
+      elevation: 2,
+    },
+    emptyButtonText: {
+      color: COLORS.white,
+      fontFamily: FONTS.semiBold,
+      marginLeft: 6,
+    },
+  });

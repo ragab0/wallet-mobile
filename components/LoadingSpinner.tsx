@@ -1,4 +1,4 @@
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/stores/themeStore";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 interface props {
@@ -25,6 +25,8 @@ export default function LoadingSpinner({
   color = coffeeTheme.primary,
   isFull = false,
 }: props) {
+  const COLORS = useThemeColors();
+  const styles = createStyles(COLORS);
   return (
     <View style={[styles.container, isFull && styles.fullContainer]}>
       <ActivityIndicator size={size} color={color} />
@@ -32,16 +34,17 @@ export default function LoadingSpinner({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
+const createStyles = (COLORS: any) =>
+  StyleSheet.create({
+    container: {
+      justifyContent: "center",
+      alignItems: "center",
+    },
 
-  fullContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: COLORS.background,
-  },
-});
+    fullContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: COLORS.background,
+    },
+  });

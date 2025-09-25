@@ -1,8 +1,10 @@
-import { COLORS, FONTS, SIZES } from "@/constants/theme";
+import { FONTS, SIZES } from "@/constants/theme";
+import { useThemeColors } from "@/stores/themeStore";
 import { FontAwesome } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
+  const COLORS = useThemeColors();
   return (
     <Tabs
       screenOptions={{

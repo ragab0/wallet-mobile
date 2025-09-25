@@ -1,5 +1,6 @@
-import { COLORS, FONTS, SIZES } from "@/constants/theme";
+import { FONTS, SIZES } from "@/constants/theme";
 import { useLogout } from "@/hooks/useAuth";
+import { useThemeColors } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
@@ -18,6 +19,8 @@ type props = {
 
 export function LogoutButton({ style, showText = false }: props) {
   const { isPending: isLoading, mutate } = useLogout();
+  const COLORS = useThemeColors();
+  const styles = createStyles(COLORS);
 
   function handleLogout() {
     Alert.alert("Confirm Logout", "Are you sure you want to sign out?", [
@@ -52,27 +55,28 @@ export function LogoutButton({ style, showText = false }: props) {
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 10,
-    borderRadius: 20,
-    backgroundColor: COLORS.card,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  text: {
-    fontSize: SIZES.default,
-    fontFamily: FONTS.medium,
-    color: COLORS.expense,
-    marginLeft: 8,
-  },
-  disabled: {
-    opacity: 0.6,
-  },
-});
+const createStyles = (COLORS: any) =>
+  StyleSheet.create({
+    button: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 10,
+      borderRadius: 20,
+      backgroundColor: COLORS.card,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 2,
+      elevation: 1,
+    },
+    text: {
+      fontSize: SIZES.default,
+      fontFamily: FONTS.medium,
+      color: COLORS.expense,
+      marginLeft: 8,
+    },
+    disabled: {
+      opacity: 0.6,
+    },
+  });

@@ -6,7 +6,7 @@ import {
   SignupRequest,
   VerifyCodeRequest,
 } from "@/types/auth";
-import { HttpRedirectResponse } from "@/types/http";
+import { HttpRedirectResponse } from "@/types/globals";
 import { apiClient } from "../configs/apiClient";
 
 export const authService = {

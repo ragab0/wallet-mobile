@@ -1,20 +1,25 @@
 import Logo from "@/assets/images/logo.png";
-import { styles } from "@/assets/styles/home.styles";
+import { createHomeStyles } from "@/assets/styles/home.styles";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { LogoutButton } from "@/components/LogOutBtn";
 import TransItem from "@/components/TransItem";
 import TransesNotFound from "@/components/TransNotFound";
-import { COLORS } from "@/constants/theme";
 import { useAuth } from "@/hooks/useAuth";
 import {
   useGetAllTransactionsMine,
   useGetTransactionsSummary,
 } from "@/hooks/useTransaction";
+import { useSelectedCurrency } from "@/stores/settingsStore";
+import { useThemeColors } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function Home() {
+  const COLORS = useThemeColors();
+  const styles = createHomeStyles(COLORS);
+  const { symbol = "$" } = useSelectedCurrency();
+
   const { user, error } = useAuth();
   const { isPending: isLoading, data: transactions } =
     useGetAllTransactionsMine();
@@ -53,20 +58,23 @@ export default function Home() {
       <View style={styles.balanceCard}>
         <Text style={styles.balanceTitle}>Total Balance</Text>
         <Text style={styles.balanceAmount}>
-          ${summary?.totalBalance.toFixed(2)}
+          {symbol}
+          {summary?.totalBalance.toFixed(2)}
         </Text>
         <View style={styles.balanceStats}>
           <View style={styles.balanceStatItem}>
             <Text style={styles.balanceStatLabel}>Income</Text>
             <Text style={[styles.balanceStatAmount, { color: COLORS.income }]}>
-              +${(summary?.totalIncome || 0).toFixed(2)}
+              +{symbol}
+              {(summary?.totalIncome || 0).toFixed(2)}
             </Text>
           </View>
           <View style={[styles.balanceStatItem, styles.statDivider]} />
           <View style={styles.balanceStatItem}>
             <Text style={styles.balanceStatLabel}>Expenses</Text>
             <Text style={[styles.balanceStatAmount, { color: COLORS.expense }]}>
-              -${Math.abs(summary?.totalExpenses || 0).toFixed(2)}
+              -{symbol}
+              {Math.abs(summary?.totalExpenses || 0).toFixed(2)}
             </Text>
           </View>
         </View>
@@ -77,7 +85,7 @@ export default function Home() {
       <FlatList
         contentContainerStyle={styles.transesListContent}
         data={transactions}
-        renderItem={({ item }) => <TransItem item={item} />}
+        renderItem={({ item }) => <TransItem item={item} symbol={symbol} />}
         ListEmptyComponent={<TransesNotFound />}
         showsVerticalScrollIndicator={false}
       />
