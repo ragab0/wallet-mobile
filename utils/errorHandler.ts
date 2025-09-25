@@ -1,6 +1,5 @@
 import type { AppError, ErrorType } from "@/types/error";
-import { IonicIconType } from "@/types/globals";
-import { HttpRedirectResponse } from "@/types/http";
+import { HttpRedirectResponse, IonicIconType } from "@/types/globals";
 import { AxiosError } from "axios";
 import { router } from "expo-router";
 

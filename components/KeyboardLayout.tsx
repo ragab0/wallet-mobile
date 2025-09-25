@@ -11,6 +11,7 @@ export default function KeyboardLayout({ children }: props) {
       contentContainerStyle={{ flexGrow: 1 }}
       enableOnAndroid={true}
       enableAutomaticScroll={false}
+      showsVerticalScrollIndicator={false}
     >
       {children}
     </KeyboardAwareScrollView>

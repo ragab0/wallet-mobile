@@ -1,3 +1,4 @@
+import { AppTheme } from "@/types/theme";
 import { PixelRatio } from "react-native";
 
 const fontScale = PixelRatio.getFontScale();
@@ -72,12 +73,37 @@ const oceanTheme = {
   shadow: "#000000",
 };
 
-export const THEMES = {
-  coffee: coffeeTheme,
-  forest: forestTheme,
-  purple: purpleTheme,
-  ocean: oceanTheme,
-};
+// @/constants/settings.ts
 
-// 👇 the main schema:
-export const COLORS = THEMES.coffee;
+export const AVAILABLE_THEMES: AppTheme[] = [
+  {
+    key: "coffee",
+    name: "Coffee",
+    description: "Warm and cozy brown theme",
+    primaryColor: "#8B593E",
+    colors: coffeeTheme,
+  },
+  {
+    key: "forest",
+    name: "Forest",
+    description: "Natural green theme",
+    primaryColor: "#2E7D32",
+    colors: forestTheme,
+  },
+  {
+    key: "purple",
+    name: "Purple",
+    description: "Modern purple theme",
+    primaryColor: "#7B1FA2",
+    colors: purpleTheme,
+  },
+  {
+    key: "ocean",
+    name: "Ocean",
+    description: "Cool blue theme",
+    primaryColor: "#0277BD",
+    colors: oceanTheme,
+  },
+];
+
+export const COLORS = coffeeTheme;
