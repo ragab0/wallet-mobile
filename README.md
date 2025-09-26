@@ -15,6 +15,7 @@
   [![Expo](https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white)](https://expo.dev/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
   [![React Query](https://img.shields.io/badge/React_Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)](https://react-query.tanstack.com/)
+  [![Zustand](https://img.shields.io/badge/Zustand-764ABC?style=for-the-badge&logo=redux&logoColor=white)](https://github.com/pmndrs/zustand)
   [![React Hook Form](https://img.shields.io/badge/React%20Hook%20Form-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white)](https://react-hook-form.com/)
   [![Axios](https://img.shields.io/badge/Axios-671ddf?style=for-the-badge&logo=axios&logoColor=white)](https://axios-http.com/)
   [![Yup](https://img.shields.io/badge/Yup-red?style=for-the-badge&logo=expo&logoColor=white)](https://docs.yup.io/)
@@ -43,23 +44,33 @@
 - Password reset functionality
 - Role-based access control
 
+### ⚙️ App Settings & Preferences
+
+- Multiple theme support
+- Notification settings
+- Contact support via email/phone
+- Report bugs directly from the app
+- Rate the app
+
 ### 🎨 Modern UI/UX
 
 - Clean, intuitive interface
-- Alternative themes support
+- Multiple theme support with smooth transitions
 - Responsive design for all devices
+- Accessibility features
 - Smooth animations and transitions
 
 ## 🛠️ Tech Stack
 
-| Category        | Technologies         |
-| --------------- | -------------------- |
-| **Framework**   | React Native, Expo   |
-| **Language**    | TypeScript           |
-| **State**       | React Query          |
-| **Forms**       | React Hook Form, Yup |
-| **HTTP Client** | Axios                |
-| **Storage**     | Expo SecureStore     |
+| Category        | Technologies                   |
+| --------------- | ------------------------------ |
+| **Framework**   | React Native, Expo             |
+| **Language**    | TypeScript                     |
+| **State**       | React Query, Zustand           |
+| **Forms**       | React Hook Form, Yup           |
+| **HTTP Client** | Axios                          |
+| **Storage**     | Expo SecureStore, AsyncStorage |
+| **Icons**       | Ionicons                       |
 
 ## 🚀 Getting Started
 
