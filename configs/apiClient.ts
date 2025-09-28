@@ -7,6 +7,7 @@ import {
   saveTokens,
 } from "@/utils/tokenStorage";
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { Platform } from "react-native";
 
 /* 01) axios instances for both (api calling & refresh token) */
 
@@ -44,6 +45,7 @@ apiClient.interceptors.request.use(
       `Request interceptor: token is > ${token ? "Present" : "Missing"}`
     );
     if (token) config.headers.Authorization = `Bearer ${token}`;
+    config.headers["x-platform"] = Platform.OS;
     return config;
   },
   (error: AxiosError) => {
@@ -54,13 +56,9 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
   (response) => {
-    console.log("Response received:", response.status, response.config.url);
-    console.dir(response);
     return response;
   },
   async (error: AxiosError): Promise<never> => {
-    console.error("Response error:", error.response?.status, error.config?.url);
-    console.dir(error);
     const originalRequest = error.config as AxiosRequestConfig & {
       _retry?: boolean;
     };
@@ -99,13 +97,16 @@ apiClient.interceptors.response.use(
           {
             headers: {
               Authorization: `Bearer ${refreshToken}`,
+              "x-platform": Platform.OS,
             },
           }
         );
 
         if (refreshResponse.data?.accessToken) {
-          const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-            refreshResponse.data;
+          const {
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken,
+          }: Record<string, string> = refreshResponse.data;
           await saveTokens(newAccessToken, newRefreshToken);
 
           // Process queued requests

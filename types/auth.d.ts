@@ -3,6 +3,7 @@ import { User } from "./user";
 export interface OAuthGoogleRequest {
   code: string;
   redirectUri: string;
+  codeVerifier: string;
 }
 
 export interface LoginRequest {

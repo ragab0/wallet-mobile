@@ -91,16 +91,11 @@ export default function Login() {
           </Text>
         </TouchableOpacity>
 
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>or</Text>
-          <View style={styles.dividerLine} />
-        </View>
-
         <GoogleOAuthBtn
           onError={() => {
             console.log("onError");
           }}
+          disabled={isLoading}
         />
 
         <View style={styles.footerContainer}>

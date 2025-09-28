@@ -2,6 +2,7 @@ import { Revenue2 } from "@/assets/images";
 import { styles } from "@/assets/styles/auth.styles";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { FormField } from "@/components/FormField";
+import GoogleLoginButton from "@/components/OAuthGoogleBtn";
 import { useSignup } from "@/hooks/useAuth";
 import { SignupRequest } from "@/types/auth";
 import { AppError } from "@/types/error";
@@ -115,6 +116,13 @@ export default function Signup() {
             {isLoading ? "Creating Account..." : "Create Account"}
           </Text>
         </TouchableOpacity>
+
+        <GoogleLoginButton
+          onError={() => {
+            console.log("onError");
+          }}
+          disabled={isLoading}
+        />
 
         <View style={styles.footerContainer}>
           <Text style={styles.footerText}>Already have an account?</Text>

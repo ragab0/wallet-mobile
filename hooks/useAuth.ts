@@ -32,7 +32,7 @@ export function useGoogleOAuth() {
     mutationFn: (body: OAuthGoogleRequest) => authService.googleOAuth(body),
     onSuccess: async function ({ accessToken, refreshToken, data: user }) {
       await saveTokens(accessToken, refreshToken);
-      queryClient.setQueryData(userKeys.current(), user);
+      await queryClient.setQueryData(userKeys.current(), user);
       router.replace("/(tabs)");
     },
     onError: (error: AppError) => {

@@ -67,7 +67,6 @@ export const styles = StyleSheet.create({
   divider: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 20,
   },
   dividerLine: {
     flex: 1,

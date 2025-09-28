@@ -8,6 +8,7 @@ import {
   VerifyCodeRequest,
 } from "@/types/auth";
 import { HttpRedirectResponse } from "@/types/globals";
+import { clearTokens } from "@/utils/tokenStorage";
 import { apiClient } from "../configs/apiClient";
 
 export const authService = {
@@ -49,5 +50,10 @@ export const authService = {
       data
     );
     return response.data;
+  },
+
+  logout: async function () {
+    await apiClient.delete("/auth/logout");
+    void clearTokens();
   },
 };
