@@ -1,7 +1,8 @@
 import { styles as authStyles } from "@/assets/styles/auth.styles";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { useAtomValue } from "jotai";
+import { useState } from "react";
 import { Control, Controller, FieldError } from "react-hook-form";
 import {
   StyleSheet,
@@ -34,7 +35,7 @@ export default function PasswordField({
   showStrengthIndicator = false,
   autoCapitalize = "none",
 }: props) {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   function togglePasswordVisibility() {
@@ -76,7 +77,7 @@ export default function PasswordField({
         control={control}
         name={name}
         render={({ field: { onChange, onBlur, value } }) => {
-          const passwordStrength = getPasswordStrength(value);
+          const passwordStrength = getPasswordStrength(value as string);
           return (
             <>
               <View style={passwordStyles.inputContainer}>

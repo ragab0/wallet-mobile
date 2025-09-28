@@ -1,6 +1,7 @@
 import { createSettingsStyles } from "@/assets/styles/settings.styles";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
+import { useAtomValue } from "jotai";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -17,7 +18,7 @@ const SettingItem: React.FC<SettingItemProps> = ({
   subtitle,
   onPress,
 }) => {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createSettingsStyles(COLORS);
   return (
     <TouchableOpacity

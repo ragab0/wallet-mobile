@@ -1,12 +1,13 @@
 import { FONTS, SIZES } from "@/constants/theme";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useAtomValue } from "jotai";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function TransesNotFound() {
   const router = useRouter();
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createStyles(COLORS);
 
   return (

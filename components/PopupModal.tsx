@@ -1,6 +1,7 @@
 import { createSettingsStyles } from "@/assets/styles/settings.styles";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
+import { useAtomValue } from "jotai";
 import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 interface props {
@@ -16,7 +17,7 @@ export default function PopupModal({
   title,
   children,
 }: props) {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createSettingsStyles(COLORS);
   return (
     <Modal

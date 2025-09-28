@@ -1,6 +1,7 @@
 import {
   AuthResponse,
   LoginRequest,
+  OAuthGoogleRequest,
   SendVerifyEmailRequest,
   SendVerifyEmailResponse,
   SignupRequest,
@@ -10,6 +11,14 @@ import { HttpRedirectResponse } from "@/types/globals";
 import { apiClient } from "../configs/apiClient";
 
 export const authService = {
+  googleOAuth: async function (body: OAuthGoogleRequest) {
+    const response = await apiClient.post<AuthResponse>(
+      "/auth/google/mobile",
+      body
+    );
+    return response.data;
+  },
+
   login: async function (credentials: LoginRequest) {
     const response = await apiClient.post<AuthResponse>(
       "/auth/login",

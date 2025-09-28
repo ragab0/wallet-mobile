@@ -8,7 +8,7 @@ import { AppError } from "@/types/error";
 import { verifyCodeSchema } from "@/validations/auth.validation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link, router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -16,7 +16,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 export default function VerifyCode() {
   const verifyMutation = useVerifyCode();
   const resendMutation = useReSendVerifyEmail();
-  const { email, message, expires } = useLocalSearchParams();
+  const { email, message } = useLocalSearchParams();
   const [successMessage, setSuccessMessage] = useState(
     (message as string) || ""
   );

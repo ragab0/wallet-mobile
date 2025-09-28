@@ -63,6 +63,23 @@ export const styles = StyleSheet.create({
     fontSize: SIZES.large,
     fontFamily: FONTS.semiBold,
   },
+
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#e0e0e0",
+  },
+  dividerText: {
+    marginHorizontal: 10,
+    color: "#666",
+    fontSize: 14,
+  },
+
   footerContainer: {
     flexDirection: "row",
     justifyContent: "center",

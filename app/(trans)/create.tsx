@@ -4,20 +4,21 @@ import KeyboardLayout from "@/components/KeyboardLayout";
 import { CATEGORIES } from "@/constants/trans";
 import { useAuth } from "@/hooks/useAuth";
 import { useCreateTransaction } from "@/hooks/useTransaction";
-import { useSelectedCurrency } from "@/stores/settingsStore";
-import { useThemeColors } from "@/stores/themeStore";
+import { getSelectedCurrencyAtom } from "@/stores/settingsStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { CreateTransForm, TransType } from "@/types/trans";
 import { createTransSchema } from "@/validations/trans.validation";
 import { Ionicons } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { router } from "expo-router";
+import { useAtomValue } from "jotai";
 import { Controller, useForm } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
 
 export default function Create() {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createCreateStyles(COLORS);
-  const { symbol = "$" } = useSelectedCurrency();
+  const { symbol = "$" } = useAtomValue(getSelectedCurrencyAtom) || {};
 
   const { user } = useAuth();
   const { isPending: isLoading, mutate } = useCreateTransaction();

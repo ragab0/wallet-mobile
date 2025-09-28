@@ -48,7 +48,7 @@ export const useCreateTransaction = () => {
   return useMutation({
     mutationFn: (data: CreateTransForm) => transactionsService.create(data),
     onSuccess: (newTransaction) => {
-      queryClient.invalidateQueries({ queryKey: transKeys.summary() });
+      void queryClient.invalidateQueries({ queryKey: transKeys.summary() });
       queryClient.setQueryData(
         transKeys.all,
         (oldData: Trans[] | undefined) => {
@@ -68,7 +68,7 @@ export const useDeleteTransaction = () => {
   return useMutation({
     mutationFn: transactionsService.delete,
     onSuccess: (_, deletedId) => {
-      queryClient.invalidateQueries({ queryKey: transKeys.summary() });
+      void queryClient.invalidateQueries({ queryKey: transKeys.summary() });
       // Remove from cache
       queryClient.removeQueries({ queryKey: transKeys.single(deletedId) });
       // Update list cache

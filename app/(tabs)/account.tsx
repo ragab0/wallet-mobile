@@ -5,14 +5,15 @@ import { LogoutButton } from "@/components/LogOutBtn";
 import SectionOptions from "@/components/SectionOptions";
 import { accountManagmentOptions } from "@/constants/account";
 import { useCurrentUser } from "@/hooks/useUser";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { formatDate } from "@/utils/formatDate";
 import { Ionicons } from "@expo/vector-icons";
+import { useAtomValue } from "jotai";
 import { Image, ScrollView, Text, View } from "react-native";
 
 export default function AccountScreen() {
   const { data: user, isLoading } = useCurrentUser();
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createAccountStyles(COLORS);
   const globals = createGlobalStyles(COLORS);
 

@@ -8,8 +8,12 @@
     "scheme": "walletapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "updates": {
+      "enabled": false
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ragab0.walletmobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -17,11 +21,11 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.walletmobile"
+      "package": "com.ragab0.walletmobile"
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
+      "output": "single",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
@@ -45,6 +49,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "82fb4f03-62da-4cff-b18c-08e492f5ad0b"
+      }
+    },
+    "owner": "ragab0"
   }
 }

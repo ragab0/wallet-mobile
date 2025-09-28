@@ -1,10 +1,11 @@
 import { FONTS, SIZES } from "@/constants/theme";
 import { CATEGORIES_INDEXED } from "@/constants/trans";
 import { useDeleteTransaction } from "@/hooks/useTransaction";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { Trans } from "@/types/trans";
 import { formatDate } from "@/utils/formatDate";
 import { Ionicons } from "@expo/vector-icons";
+import { useAtomValue } from "jotai";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type props = {
@@ -13,7 +14,7 @@ type props = {
 };
 
 export default function TransaItem({ item, symbol }: props) {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createStyles(COLORS);
 
   const isIncome = item.type === "income";

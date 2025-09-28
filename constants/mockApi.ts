@@ -1,9 +1,9 @@
 import { Trans } from "@/types/trans";
 
-const user = {
-  emailAddress: "ragab.dev@gmail.com",
-  fname: "ragab",
-};
+// const user = {
+//   emailAddress: "ragab.dev@gmail.com",
+//   fname: "ragab",
+// };
 
 export const summary = {
   balance: "5",

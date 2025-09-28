@@ -1,10 +1,11 @@
 import { FONTS, SIZES } from "@/constants/theme";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { FontAwesome } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { useAtomValue } from "jotai";
 
 export default function TabsLayout() {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   return (
     <Tabs
       screenOptions={{

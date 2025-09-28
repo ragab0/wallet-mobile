@@ -2,8 +2,8 @@ export interface SettingsFormData {
   notifications: boolean;
   emailNotifications: boolean;
   pushNotifications: boolean;
-  currency: string;
-  theme: string;
+  currencyCode: string;
+  themeName: string;
 }
 
 export interface Currency {

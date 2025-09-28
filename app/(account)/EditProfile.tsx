@@ -10,14 +10,15 @@ import {
   useUpdateProfile,
   useUploadPicture,
 } from "@/hooks/useUser";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { AppError } from "@/types/error";
 import { UpdateUserData } from "@/types/user";
 import { profileSchema } from "@/validations/account.validation";
 import { Ionicons } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as ImagePicker from "expo-image-picker";
-import React, { useEffect, useState } from "react";
+import { useAtomValue } from "jotai";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Alert,
@@ -30,7 +31,7 @@ import {
 } from "react-native";
 
 export default function EditProfileScreen() {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createProfileStyles(COLORS);
   const globals = createGlobalStyles(COLORS);
 

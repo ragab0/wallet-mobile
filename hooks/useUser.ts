@@ -49,7 +49,7 @@ export const useUploadPicture = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: FormData) => usersService.uploadPicture(formData),
-    onSuccess: (updatedUser: User) => {
+    onSuccess: (updatedUser) => {
       queryClient.setQueryData(userKeys.current(), updatedUser);
     },
     onError: (error: AppError) => {

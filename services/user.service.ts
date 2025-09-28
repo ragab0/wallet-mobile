@@ -18,15 +18,11 @@ export const usersService = {
   },
 
   uploadPicture: async function (formData: FormData) {
-    const response = await apiClient.patch<User>(
-      "/users/me/picture",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const response = await apiClient.post<User>("/users/me/picture", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   },
   // uploadAvatar: async function (formData: FormData) {

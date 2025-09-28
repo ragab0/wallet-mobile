@@ -1,4 +1,5 @@
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
+import { useAtomValue } from "jotai";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 interface props {
@@ -25,7 +26,7 @@ export default function LoadingSpinner({
   color = coffeeTheme.primary,
   isFull = false,
 }: props) {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createStyles(COLORS);
   return (
     <View style={[styles.container, isFull && styles.fullContainer]}>

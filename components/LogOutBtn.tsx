@@ -1,8 +1,8 @@
 import { FONTS, SIZES } from "@/constants/theme";
 import { useLogout } from "@/hooks/useAuth";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import { useAtomValue } from "jotai";
 import {
   ActivityIndicator,
   Alert,
@@ -19,7 +19,7 @@ type props = {
 
 export function LogoutButton({ style, showText = false }: props) {
   const { isPending: isLoading, mutate } = useLogout();
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createStyles(COLORS);
 
   function handleLogout() {

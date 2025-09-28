@@ -1,35 +1,24 @@
+import { DEFAULT_SETTINGS } from "@/constants/settings";
 import { AVAILABLE_THEMES } from "@/constants/theme";
-import { AppTheme } from "@/types/theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { atom } from "jotai";
+import { atomWithStorage, createJSONStorage } from "jotai/utils";
+import { AsyncStorage as AS } from "jotai/vanilla/utils/atomWithStorage";
 
-type ThemeState = {
-  currentThemeKey: string;
-  setTheme: (themeKey: string) => void;
-  getCurrentTheme: () => AppTheme | undefined;
-};
-
-export const useThemeStore = create<ThemeState>()(
-  persist(
-    (set, get) => ({
-      currentThemeKey: "coffee", // Default theme
-      setTheme: (themeKey: string) => set({ currentThemeKey: themeKey }),
-      getCurrentTheme: () => {
-        const { currentThemeKey } = get();
-        return AVAILABLE_THEMES.find((theme) => theme.key === currentThemeKey);
-      },
-    }),
-    {
-      name: "theme-storage",
-      storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
+const asyncStorageAdapter = createJSONStorage(() => AsyncStorage);
+export const currentThemeKeyAtom = atomWithStorage(
+  "theme-storage",
+  DEFAULT_SETTINGS.themeName,
+  asyncStorageAdapter as AS<string>,
+  { getOnInit: true }
 );
 
-// Hook to get current theme colors
-export const useThemeColors = () => {
-  const getCurrentTheme = useThemeStore((state) => state.getCurrentTheme);
-  const theme = getCurrentTheme();
+export const getCurrentThemeAtom = atom((get) => {
+  const currentThemeKey = get(currentThemeKeyAtom);
+  return AVAILABLE_THEMES.find((theme) => theme.key === currentThemeKey);
+});
+
+export const getThemeColorsAtom = atom((get) => {
+  const theme = get(getCurrentThemeAtom);
   return theme?.colors || AVAILABLE_THEMES[0].colors;
-};
+});

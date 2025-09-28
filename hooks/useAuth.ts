@@ -1,6 +1,7 @@
 import { authService } from "@/services/auth.service";
 import {
   LoginRequest,
+  OAuthGoogleRequest,
   SendVerifyEmailRequest,
   SignupRequest,
   VerifyCodeRequest,
@@ -24,6 +25,21 @@ export const useAuth = () => {
 };
 
 /** MUTATIONS (login/signup & emails) */
+
+export function useGoogleOAuth() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: OAuthGoogleRequest) => authService.googleOAuth(body),
+    onSuccess: async function ({ accessToken, refreshToken, data: user }) {
+      await saveTokens(accessToken, refreshToken);
+      queryClient.setQueryData(userKeys.current(), user);
+      router.replace("/(tabs)");
+    },
+    onError: (error: AppError) => {
+      return error;
+    },
+  });
+}
 
 export function useLogin() {
   const queryClient = useQueryClient();

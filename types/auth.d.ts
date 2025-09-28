@@ -1,5 +1,10 @@
 import { User } from "./user";
 
+export interface OAuthGoogleRequest {
+  code: string;
+  redirectUri: string;
+}
+
 export interface LoginRequest {
   email: string;
   password: string;

@@ -13,7 +13,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (!isInitialized) {
-      refetch();
+      void refetch();
     }
   }, [isInitialized, refetch]);
 

@@ -1,6 +1,7 @@
 import { createSettingsStyles } from "@/assets/styles/settings.styles";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
+import { useAtomValue } from "jotai";
 import { Switch, Text, View } from "react-native";
 
 interface props {
@@ -20,7 +21,7 @@ export default function SettingSwitch({
   onValueChange,
   disabled = false,
 }: props) {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createSettingsStyles(COLORS);
   return (
     <View style={styles.settingItem}>

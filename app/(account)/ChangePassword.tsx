@@ -6,18 +6,19 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import PasswordField from "@/components/PasswordField";
 import { SuccessAlert } from "@/components/SuccessAlert";
 import { useChangePassword } from "@/hooks/useUser";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { ChangePasswordData } from "@/types/user";
 import { passwordSchema } from "@/validations/account.validation";
 import { Ionicons } from "@expo/vector-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import { useAtomValue } from "jotai";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function ChangePasswordScreen() {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createPasswordStyles(COLORS);
   const globals = createGlobalStyles(COLORS);
 

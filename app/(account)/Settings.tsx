@@ -9,42 +9,51 @@ import { AVAILABLE_CURRENCIES } from "@/constants/settings";
 import { AVAILABLE_THEMES } from "@/constants/theme";
 import { useLogout } from "@/hooks/useAuth";
 import { useDeleteAccount } from "@/hooks/useUser";
-import { useSelectedCurrency, useSettingsStore } from "@/stores/settingsStore";
-import { useThemeStore } from "@/stores/themeStore";
+import {
+  currencyAtomCode,
+  emailNotificationsAtom,
+  getSelectedCurrencyAtom,
+  pushNotificationsAtom,
+} from "@/stores/settingsStore";
+import { currentThemeKeyAtom, getCurrentThemeAtom } from "@/stores/themeStore";
 import { Currency } from "@/types/settings";
 import { AppTheme } from "@/types/theme";
 import { handleEmail } from "@/utils/handleEmail";
 import { openPhone } from "@/utils/handlePhone";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import React from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 export default function SettingsScreen() {
   const { mutate: logout } = useLogout();
   const deleteAccountMutation = useDeleteAccount();
-  const { setTheme, getCurrentTheme } = useThemeStore();
-  const currentTheme = getCurrentTheme();
+  // theme & styles;
+  const setTheme = useSetAtom(currentThemeKeyAtom);
+  const currentTheme = useAtomValue(getCurrentThemeAtom);
   const styles = createSettingsStyles(currentTheme?.colors);
   const globals = createGlobalStyles(currentTheme?.colors);
-  const {
-    pushNotifications,
-    emailNotifications,
-    setCurrency,
-    setPushNotifications,
-    setEmailNotifications,
-  } = useSettingsStore();
-  const selectedCurrency = useSelectedCurrency();
+  // currency
+  const setCurrency = useSetAtom(currencyAtomCode);
+  const selectedCurrency = useAtomValue(getSelectedCurrencyAtom);
+  // notificaton & mails & models:
+  const [pushNotifications, setPushNotifications] = useAtom(
+    pushNotificationsAtom
+  );
+  const [emailNotifications, setEmailNotifications] = useAtom(
+    emailNotificationsAtom
+  );
   const [showCurrencyModal, setShowCurrencyModal] = React.useState(false);
   const [showThemeModal, setShowThemeModal] = React.useState(false);
 
-  function handleCurrencySelect(currency: Currency) {
-    setCurrency(currency.code);
+  async function handleCurrencySelect(currency: Currency) {
+    await setCurrency(currency.code);
     setShowCurrencyModal(false);
   }
 
-  function handleThemeSelect(theme: AppTheme) {
-    setTheme(theme.key);
+  async function handleThemeSelect(theme: AppTheme) {
+    await setTheme(theme.key);
     setShowThemeModal(false);
   }
 
@@ -76,7 +85,7 @@ export default function SettingsScreen() {
             try {
               await deleteAccountMutation.mutateAsync();
               logout();
-            } catch (error) {
+            } catch (_) {
               Alert.alert(
                 "Error",
                 "Failed to delete account. Please try again."

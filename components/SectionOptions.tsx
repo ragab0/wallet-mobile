@@ -1,9 +1,9 @@
 import { createGlobalStyles } from "@/assets/styles/globals.styles";
 import { FONTS, SIZES } from "@/constants/theme";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { SectionOptions as SectionOptionsTypes } from "@/types/globals";
 import { Ionicons } from "@expo/vector-icons";
-import React from "react";
+import { useAtomValue } from "jotai";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type props = {
@@ -12,7 +12,7 @@ type props = {
 };
 
 export default function SectionOptions({ options, title }: props) {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const globals = createGlobalStyles(COLORS);
   const styles = createStyles(COLORS);
 

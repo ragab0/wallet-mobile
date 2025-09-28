@@ -3,12 +3,12 @@ import { CreateTransForm, Summary, Trans } from "@/types/trans";
 
 export const transactionsService = {
   getAllMine: async function () {
-    const response = await apiClient.get<Trans[]>(`/transactions/`);
+    const response = await apiClient.get<Trans[]>("/transactions/");
     return response.data;
   },
 
   getSummary: async function () {
-    const response = await apiClient.get<Summary>(`/transactions/summary`);
+    const response = await apiClient.get<Summary>("/transactions/summary");
     return response.data;
   },
 

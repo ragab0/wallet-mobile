@@ -22,6 +22,6 @@ export const DEFAULT_SETTINGS: SettingsFormData = {
   notifications: true,
   emailNotifications: true,
   pushNotifications: true,
-  currency: "USD",
-  theme: "coffee",
+  currencyCode: "USD",
+  themeName: "coffee",
 };

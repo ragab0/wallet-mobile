@@ -2,6 +2,7 @@ import { Revenue4 } from "@/assets/images";
 import { styles } from "@/assets/styles/auth.styles";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { FormField } from "@/components/FormField";
+import GoogleOAuthBtn from "@/components/OAuthGoogleBtn";
 import { useLogin } from "@/hooks/useAuth";
 import { LoginRequest } from "@/types/auth";
 import { AppError } from "@/types/error";
@@ -89,6 +90,18 @@ export default function Login() {
             {isLoading ? "Signing In..." : "Sign In"}
           </Text>
         </TouchableOpacity>
+
+        <View style={styles.divider}>
+          <View style={styles.dividerLine} />
+          <Text style={styles.dividerText}>or</Text>
+          <View style={styles.dividerLine} />
+        </View>
+
+        <GoogleOAuthBtn
+          onError={() => {
+            console.log("onError");
+          }}
+        />
 
         <View style={styles.footerContainer}>
           <Text style={styles.footerText}>Don&apos;t have an account?</Text>

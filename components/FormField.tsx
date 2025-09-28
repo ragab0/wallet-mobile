@@ -1,5 +1,6 @@
 import { styles as authStyles, styles } from "@/assets/styles/auth.styles";
-import { useThemeColors } from "@/stores/themeStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
+import { useAtomValue } from "jotai";
 import React from "react";
 import { Control, Controller, FieldError } from "react-hook-form";
 import { Text, TextInput, View } from "react-native";
@@ -29,7 +30,7 @@ export const FormField: React.FC<FormFieldProps> = ({
   inputStyle,
   saveErrorSpace = true,
 }) => {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   return (
     <View>
       <Controller

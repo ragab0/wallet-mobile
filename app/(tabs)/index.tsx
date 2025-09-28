@@ -9,16 +9,17 @@ import {
   useGetAllTransactionsMine,
   useGetTransactionsSummary,
 } from "@/hooks/useTransaction";
-import { useSelectedCurrency } from "@/stores/settingsStore";
-import { useThemeColors } from "@/stores/themeStore";
+import { getSelectedCurrencyAtom } from "@/stores/settingsStore";
+import { getThemeColorsAtom } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useAtomValue } from "jotai";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function Home() {
-  const COLORS = useThemeColors();
+  const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createHomeStyles(COLORS);
-  const { symbol = "$" } = useSelectedCurrency();
+  const { symbol = "$" } = useAtomValue(getSelectedCurrencyAtom) || {};
 
   const { user, error } = useAuth();
   const { isPending: isLoading, data: transactions } =
