@@ -2,7 +2,15 @@ import { Revenue4 } from "@/assets/images";
 import { styles } from "@/assets/styles/auth.styles";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { FormField } from "@/components/FormField";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import GoogleOAuthBtn from "@/components/OAuthGoogleBtn";
+import { COLORS } from "@/constants/theme";
+import {
+  useButtonPress,
+  useFadeIn,
+  useSlideInFromY,
+  useSlideUpFadeIn,
+} from "@/hooks/useAnimation";
 import { useLogin } from "@/hooks/useAuth";
 import { LoginRequest } from "@/types/auth";
 import { AppError } from "@/types/error";
@@ -11,10 +19,18 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function Login() {
+  const imageAnim = useSlideUpFadeIn(600, 0);
+  const titleAnim = useSlideInFromY(500, 600, false);
+  const formAnim = useSlideInFromY(500, 800, true);
+  const buttonAnim = useSlideInFromY(500, 1000, true);
+  const googleButtonAnim = useFadeIn(500, 1200);
+  const footerAnim = useSlideUpFadeIn(600, 1500, 50);
+  const buttonPress = useButtonPress();
+
   const [apiError, setApiError] = useState<AppError | null>(null);
   const { isPending: isLoading, mutateAsync } = useLogin();
   const {
@@ -46,8 +62,17 @@ export default function Login() {
       enableAutomaticScroll={false}
     >
       <View style={styles.container}>
-        <Image source={Revenue4} style={styles.img} />
-        <Text style={styles.title}>Welcome Back</Text>
+        <Animated.View
+          style={{
+            opacity: imageAnim.opacity,
+            transform: [{ translateY: imageAnim.translateY }],
+          }}
+        >
+          <Image source={Revenue4} style={styles.img} />
+        </Animated.View>
+        <Animated.View style={{ opacity: titleAnim.opacity }}>
+          <Text style={styles.title}>Welcome Back</Text>
+        </Animated.View>
 
         {apiError && (
           <ErrorAlert
@@ -57,7 +82,14 @@ export default function Login() {
           />
         )}
 
-        <View style={[styles.formContainer]}>
+        <Animated.View
+          style={[
+            styles.formContainer,
+            {
+              opacity: formAnim.opacity,
+            },
+          ]}
+        >
           <FormField
             control={control}
             name="email"
@@ -76,36 +108,66 @@ export default function Login() {
             error={errors.password}
             editable={!isLoading}
           />
-        </View>
+        </Animated.View>
 
-        <TouchableOpacity
+        <Animated.View
           style={[
-            styles.button,
-            (isLoading || !isValid) && styles.buttonDisabled,
+            styles.buttonContainer,
+            {
+              opacity: buttonAnim.opacity,
+              transform: [{ scale: buttonPress.scale }],
+            },
           ]}
-          onPress={handleSubmit(onSubmit)}
-          disabled={isLoading || !isValid}
         >
-          <Text style={styles.buttonText}>
-            {isLoading ? "Signing In..." : "Sign In"}
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              (isLoading || !isValid) && styles.buttonDisabled,
+            ]}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isLoading || !isValid}
+            onPressIn={buttonPress.onPressIn}
+            onPressOut={buttonPress.onPressOut}
+          >
+            {isLoading && <LoadingSpinner size="small" color={COLORS.white} />}
+            <Text style={styles.buttonText}>
+              {isLoading ? "Signing In" : "Sign In"}
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
 
-        <GoogleOAuthBtn
-          onError={() => {
-            console.log("onError");
-          }}
-          disabled={isLoading}
-        />
+        <Animated.View
+          style={[
+            styles.buttonContainer,
+            {
+              opacity: googleButtonAnim,
+            },
+          ]}
+        >
+          <GoogleOAuthBtn
+            onError={() => {
+              console.log("onError");
+            }}
+            disabled={isLoading}
+          />
+        </Animated.View>
 
-        <View style={styles.footerContainer}>
+        <Animated.View
+          style={[
+            styles.footerContainer,
+            {
+              opacity: footerAnim.opacity,
+              transform: [{ translateY: footerAnim.translateY }],
+            },
+          ]}
+        >
           <Text style={styles.footerText}>Don&apos;t have an account?</Text>
           <Link href="/signup" asChild>
             <TouchableOpacity disabled={isLoading}>
               <Text style={styles.linkText}>Sign up</Text>
             </TouchableOpacity>
           </Link>
-        </View>
+        </Animated.View>
       </View>
     </KeyboardAwareScrollView>
   );

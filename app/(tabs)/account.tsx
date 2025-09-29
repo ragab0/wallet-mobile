@@ -18,7 +18,7 @@ export default function AccountScreen() {
   const globals = createGlobalStyles(COLORS);
 
   if (isLoading) {
-    return <LoadingSpinner isFull={true} />;
+    return <LoadingSpinner size="large" isFull={true} />;
   }
 
   return (

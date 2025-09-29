@@ -1,13 +1,13 @@
 import AuthLayout from "@/app/(auth)/_layout";
 import { useAuth } from "@/hooks/useAuth";
-import React, { useEffect } from "react";
-import { Text, View } from "react-native";
+import { useEffect } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 
-interface AuthProviderProps {
+interface props {
   children: React.ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export default function AuthProvider({ children }: props) {
   const { refetch, isInitialized, isLoading, isAuthenticated, user } =
     useAuth();
 
@@ -18,11 +18,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [isInitialized, refetch]);
 
   if (!isInitialized || isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Loading...</Text>
-      </View>
-    );
+    return <LoadingSpinner size="large" isFull={true} />;
   }
 
   console.log(
@@ -34,4 +30,4 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   return <>{children}</>;
-};
+}

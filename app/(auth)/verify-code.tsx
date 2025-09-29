@@ -92,9 +92,6 @@ export default function VerifyCode() {
   const canResend = resendCooldown === 0 && !isResending && !isVerifying;
   const isLoading = isVerifying || isResending;
 
-  console.log(message);
-  console.log("1111111111111323242");
-
   return (
     <KeyboardAwareScrollView
       style={{ flex: 1 }}

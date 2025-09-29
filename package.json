@@ -58,8 +58,7 @@
     "@types/react": "^19.1.0",
     "eslint": "^9.36.0",
     "eslint-config-expo": "~10.0.0",
-    "eslint-import-resolver-typescript": "^4.4.4",
-    "typescript": "~5.9.2"
+    "eslint-import-resolver-typescript": "^4.4.4"
   },
   "private": true
 }

@@ -6,13 +6,8 @@ import { Ionicons } from "@expo/vector-icons";
 import * as AuthSession from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 import React, { useEffect } from "react";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import LoadingSpinner from "./LoadingSpinner";
 
 WebBrowser.maybeCompleteAuthSession();
 const ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_WEB || "";
@@ -74,7 +69,7 @@ export default function GoogleLoginButton({
         code: "GOOGLE_AUTH_ERROR",
       } as unknown as AppError);
     }
-  }, [response, mutate, onError]);
+  }, [response, mutate, onError, request?.codeVerifier]);
 
   async function handleGoogleLogin() {
     try {
@@ -106,7 +101,7 @@ export default function GoogleLoginButton({
         disabled={buttonDisabled}
       >
         {isPending ? (
-          <ActivityIndicator color={COLORS.text} size="small" />
+          <LoadingSpinner color={COLORS.text} size="small" />
         ) : (
           <>
             <Ionicons name="logo-google" size={20} color={COLORS.text} />

@@ -26,8 +26,7 @@ export default function Home() {
     useGetAllTransactionsMine();
   const { data: summary } = useGetTransactionsSummary();
 
-  if (isLoading) return <LoadingSpinner />;
-  if (error) return <Text>Error</Text>;
+  if (isLoading) return <LoadingSpinner size="large" isFull={true} />;
 
   return (
     <View style={styles.container}>

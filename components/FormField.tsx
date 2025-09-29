@@ -1,9 +1,10 @@
 import { styles as authStyles, styles } from "@/assets/styles/auth.styles";
+import { useShake } from "@/hooks/useAnimation";
 import { getThemeColorsAtom } from "@/stores/themeStore";
 import { useAtomValue } from "jotai";
 import React from "react";
 import { Control, Controller, FieldError } from "react-hook-form";
-import { Text, TextInput, View } from "react-native";
+import { Animated, Text, TextInput } from "react-native";
 
 interface FormFieldProps {
   control: Control<any>;
@@ -31,8 +32,9 @@ export const FormField: React.FC<FormFieldProps> = ({
   saveErrorSpace = true,
 }) => {
   const COLORS = useAtomValue(getThemeColorsAtom);
+  const shakeAnim = useShake(error);
   return (
-    <View>
+    <Animated.View style={{ transform: [{ translateX: shakeAnim }] }}>
       <Controller
         control={control}
         name={name}
@@ -58,6 +60,6 @@ export const FormField: React.FC<FormFieldProps> = ({
       {saveErrorSpace && (
         <Text style={styles.textError}>{error ? error.message : " "}</Text>
       )}
-    </View>
+    </Animated.View>
   );
 };

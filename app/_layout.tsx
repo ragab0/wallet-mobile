@@ -1,4 +1,5 @@
-import { AuthProvider } from "@/components/AuthProviders";
+import AuthProvider from "@/components/AuthProviders";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { queryClient } from "@/configs/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
@@ -21,7 +22,7 @@ export default function RootLayout() {
     InterSemiBold: require("../assets/fonts/Inter-SemiBold.ttf"),
   });
 
-  if (!loaded) return null;
+  if (!loaded) return <LoadingSpinner size="large" isFull={true} />;
 
   return (
     <QueryClientProvider client={queryClient}>
