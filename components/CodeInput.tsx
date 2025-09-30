@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
-interface CodeInputProps {
+interface props {
   value: string;
   onChangeText: (code: string) => void;
   length?: number;
@@ -9,13 +9,13 @@ interface CodeInputProps {
   editable?: boolean;
 }
 
-export const CodeInput: React.FC<CodeInputProps> = ({
+export default function CodeInput({
   value,
   onChangeText,
   length = 6,
   error = false,
   editable = true,
-}) => {
+}: props) {
   const inputRefs = useRef<(TextInput | null)[]>([]);
   const [focusedIndex, setFocusedIndex] = useState<number>(0);
 
@@ -86,7 +86,7 @@ export const CodeInput: React.FC<CodeInputProps> = ({
       ))}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#1F2937",
     backgroundColor: "#FFFFFF",
+    textAlign: "center",
   },
   inputFocused: {
     borderColor: "#3B82F6",

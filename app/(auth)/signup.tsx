@@ -2,21 +2,34 @@ import { Revenue2 } from "@/assets/images";
 import { styles } from "@/assets/styles/auth.styles";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { FormField } from "@/components/FormField";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import GoogleLoginButton from "@/components/OAuthGoogleBtn";
+import { COLORS } from "@/constants/theme";
+import {
+  useButtonPress,
+  useFadeIn,
+  useSlideInFromY,
+  useSlideUpFadeIn,
+} from "@/hooks/useAnimation";
 import { useSignup } from "@/hooks/useAuth";
 import { SignupRequest } from "@/types/auth";
-import { AppError } from "@/types/error";
 import { signupSchema } from "@/validations/auth.validation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link } from "expo-router";
-import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function Signup() {
-  const [apiError, setApiError] = useState<AppError | null>(null);
-  const { isPending: isLoading, mutateAsync } = useSignup();
+  const imageAnim = useSlideUpFadeIn(600, 0);
+  const titleAnim = useSlideInFromY(500, 600, false);
+  const formAnim = useSlideInFromY(500, 800, true);
+  const buttonAnim = useFadeIn(500, 1200);
+  const googleButtonAnim = useFadeIn(500, 1500);
+  const footerAnim = useSlideUpFadeIn(600, 2000, 50);
+  const buttonPress = useButtonPress();
+
+  const { isPending: isLoading, mutate, error: apiError } = useSignup();
   const {
     control,
     handleSubmit,
@@ -27,16 +40,7 @@ export default function Signup() {
   });
 
   async function onSubmit(data: SignupRequest) {
-    setApiError(null);
-    try {
-      await mutateAsync(data);
-    } catch (error: any) {
-      setApiError(error as AppError);
-    }
-  }
-
-  function dismissError() {
-    setApiError(null);
+    mutate(data);
   }
 
   return (
@@ -47,18 +51,28 @@ export default function Signup() {
       enableAutomaticScroll={false}
     >
       <View style={styles.container}>
-        <Image source={Revenue2} style={styles.img} />
-        <Text style={styles.title}>Create Account</Text>
+        <Animated.View
+          style={{
+            opacity: imageAnim.opacity,
+            transform: [{ translateY: imageAnim.translateY }],
+          }}
+        >
+          <Image source={Revenue2} style={styles.img} />
+        </Animated.View>
+        <Animated.View style={{ opacity: titleAnim.opacity }}>
+          <Text style={styles.title}>Create Account</Text>
+        </Animated.View>
 
-        {apiError && (
-          <ErrorAlert
-            error={apiError}
-            onDismiss={dismissError}
-            showRetry={true}
-          />
-        )}
+        {apiError && <ErrorAlert error={apiError} />}
 
-        <View style={styles.formContainer}>
+        <Animated.View
+          style={[
+            styles.formContainer,
+            {
+              opacity: formAnim.opacity,
+            },
+          ]}
+        >
           <FormField
             control={control}
             name="fname"
@@ -102,36 +116,60 @@ export default function Signup() {
             error={errors.passwordConfirm}
             editable={!isLoading}
           />
-        </View>
+        </Animated.View>
 
-        <TouchableOpacity
+        <Animated.View
           style={[
-            styles.button,
-            (isLoading || !isValid) && styles.buttonDisabled,
+            styles.buttonContainer,
+            {
+              opacity: buttonAnim,
+            },
           ]}
-          onPress={handleSubmit(onSubmit)}
-          disabled={isLoading || !isValid}
         >
-          <Text style={styles.buttonText}>
-            {isLoading ? "Creating Account..." : "Create Account"}
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              (isLoading || !isValid) && styles.buttonDisabled,
+            ]}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isLoading || !isValid}
+            onPressIn={buttonPress.onPressIn}
+            onPressOut={buttonPress.onPressOut}
+          >
+            {isLoading && <LoadingSpinner size="small" color={COLORS.white} />}
+            <Text style={styles.buttonText}>
+              {isLoading ? "Creating Account" : "Create Account"}
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
 
-        <GoogleLoginButton
-          onError={() => {
-            console.log("onError");
-          }}
-          disabled={isLoading}
-        />
+        <Animated.View
+          style={[styles.buttonContainer, { opacity: googleButtonAnim }]}
+        >
+          <GoogleLoginButton
+            onError={() => {
+              console.log("onError");
+            }}
+            disabled={isLoading}
+          />
+        </Animated.View>
 
-        <View style={styles.footerContainer}>
+        <Animated.View
+          style={[
+            styles.footerContainer,
+            {
+              opacity: footerAnim.opacity,
+              transform: [{ translateY: footerAnim.translateY }],
+            },
+          ]}
+        >
           <Text style={styles.footerText}>Already have an account?</Text>
           <Link href="/login" asChild>
             <TouchableOpacity disabled={isLoading}>
               <Text style={styles.linkText}>Sign in</Text>
             </TouchableOpacity>
           </Link>
-        </View>
+        </Animated.View>
       </View>
     </KeyboardAwareScrollView>
   );

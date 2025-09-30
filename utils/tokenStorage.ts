@@ -3,7 +3,7 @@ import { Platform } from "react-native";
 
 export async function saveTokens(accessToken: string, refreshToken: string) {
   if (Platform.OS === "web") {
-    localStorage.setItem("accessToken", accessToken);
+    return localStorage.setItem("accessToken", accessToken);
   }
   await SecureStore.setItemAsync("accessToken", accessToken);
   await SecureStore.setItemAsync("refreshToken", refreshToken);
@@ -23,7 +23,7 @@ export async function getRefreshToken() {
 
 export async function clearTokens() {
   if (Platform.OS === "web") {
-    localStorage.removeItem("accessToken");
+    return localStorage.removeItem("accessToken");
   }
   await SecureStore.deleteItemAsync("accessToken");
   await SecureStore.deleteItemAsync("refreshToken");

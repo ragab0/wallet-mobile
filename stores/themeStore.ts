@@ -4,8 +4,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { atom } from "jotai";
 import { atomWithStorage, createJSONStorage } from "jotai/utils";
 import { AsyncStorage as AS } from "jotai/vanilla/utils/atomWithStorage";
+import { Platform } from "react-native";
 
-const asyncStorageAdapter = createJSONStorage(() => AsyncStorage);
+const asyncStorageAdapter = createJSONStorage(() =>
+  Platform.OS === "web" ? localStorage : AsyncStorage
+);
+
 export const currentThemeKeyAtom = atomWithStorage(
   "theme-storage",
   DEFAULT_SETTINGS.themeName,

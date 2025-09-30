@@ -4,7 +4,7 @@ import { ErrorAlert } from "@/components/ErrorAlert";
 import { FormField } from "@/components/FormField";
 import KeyboardLayout from "@/components/KeyboardLayout";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { SuccessAlert } from "@/components/SuccessAlert";
+import SuccessAlert from "@/components/SuccessAlert";
 import {
   useCurrentUser,
   useUpdateProfile,
@@ -43,7 +43,7 @@ export default function EditProfileScreen() {
   const {
     control,
     handleSubmit,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isValid },
     reset,
   } = useForm<UpdateUserData>({
     resolver: yupResolver(profileSchema),
@@ -155,19 +155,12 @@ export default function EditProfileScreen() {
         {successMessage && (
           <SuccessAlert
             message={successMessage}
-            onDismiss={() => setSuccessMessage(null)}
+            onDismis={() => setSuccessMessage(null)}
           />
         )}
 
         {/* Error Alert */}
-        {error && (
-          <ErrorAlert
-            error={error}
-            onRetry={() => setError(null)}
-            onDismiss={() => setError(null)}
-            showRetry={false}
-          />
-        )}
+        {error && <ErrorAlert error={error} onDismiss={() => setError(null)} />}
 
         {/* Profile Picture Section */}
         <View style={styles.pictureSection}>
@@ -222,12 +215,10 @@ export default function EditProfileScreen() {
             <View>
               <Text style={globals.inputLabel}>Email</Text>
               <TextInput value={user?.email} editable={false} />
-              <Text></Text>
             </View>
             <View>
               <Text style={globals.inputLabel}>Role</Text>
               <TextInput value={user?.role} editable={false} />
-              <Text></Text>
             </View>
           </View>
 
@@ -235,10 +226,10 @@ export default function EditProfileScreen() {
           <TouchableOpacity
             style={[
               styles.saveButton,
-              (!isDirty || isLoading) && globals.disabledButton,
+              (!isDirty || isLoading || !isValid) && globals.disabledButton,
             ]}
             onPress={handleSubmit(onSubmit)}
-            disabled={!isDirty || isLoading}
+            disabled={!isDirty || isLoading || !isValid}
           >
             {isLoading ? (
               <LoadingSpinner size="small" color={COLORS.white} />

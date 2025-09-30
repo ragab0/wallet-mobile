@@ -23,7 +23,7 @@ import { openPhone } from "@/utils/handlePhone";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import React from "react";
+import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 export default function SettingsScreen() {
@@ -44,8 +44,8 @@ export default function SettingsScreen() {
   const [emailNotifications, setEmailNotifications] = useAtom(
     emailNotificationsAtom
   );
-  const [showCurrencyModal, setShowCurrencyModal] = React.useState(false);
-  const [showThemeModal, setShowThemeModal] = React.useState(false);
+  const [showCurrencyModal, setShowCurrencyModal] = useState(false);
+  const [showThemeModal, setShowThemeModal] = useState(false);
 
   async function handleCurrencySelect(currency: Currency) {
     await setCurrency(currency.code);

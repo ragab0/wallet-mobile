@@ -1,6 +1,8 @@
 import { createCreateStyles } from "@/assets/styles/create.styles";
 import { FormField } from "@/components/FormField";
 import KeyboardLayout from "@/components/KeyboardLayout";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import SuccessAlert from "@/components/SuccessAlert";
 import { CATEGORIES } from "@/constants/trans";
 import { useAuth } from "@/hooks/useAuth";
 import { useCreateTransaction } from "@/hooks/useTransaction";
@@ -21,13 +23,14 @@ export default function Create() {
   const { symbol = "$" } = useAtomValue(getSelectedCurrencyAtom) || {};
 
   const { user } = useAuth();
-  const { isPending: isLoading, mutate } = useCreateTransaction();
+  const { isPending: isLoading, mutate, status } = useCreateTransaction();
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
     setValue,
     watch,
+    reset,
   } = useForm({
     resolver: yupResolver(createTransSchema),
     mode: "onChange",
@@ -45,6 +48,7 @@ export default function Create() {
 
   function createHandler(data: CreateTransForm) {
     mutate(data);
+    reset();
   }
 
   function typeSelectHandler(type: TransType) {
@@ -53,6 +57,11 @@ export default function Create() {
       shouldDirty: true,
     });
   }
+
+  const message =
+    status === "success" ? "Item has been added successfly" : undefined;
+
+  console.log(message);
 
   return (
     <KeyboardLayout>
@@ -75,7 +84,7 @@ export default function Create() {
             disabled={!isValid || isLoading}
           >
             <Text style={styles.saveButton}>
-              {isLoading ? "Saving..." : "Save"}
+              {isLoading ? <LoadingSpinner size="small" /> : "Save"}
             </Text>
             {!isLoading && (
               <Ionicons name="checkmark" size={18} color={COLORS.primary} />
@@ -85,6 +94,8 @@ export default function Create() {
 
         {/* main */}
         <View style={styles.main}>
+          {message && <SuccessAlert message={message} autoDismisIn={3} />}
+
           {/* types */}
           <View style={styles.typeSelector}>
             <TouchableOpacity

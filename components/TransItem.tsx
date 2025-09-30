@@ -1,32 +1,47 @@
 import { FONTS, SIZES } from "@/constants/theme";
 import { CATEGORIES_INDEXED } from "@/constants/trans";
+import { useStaggeredItem } from "@/hooks/useAnimation";
 import { useDeleteTransaction } from "@/hooks/useTransaction";
 import { getThemeColorsAtom } from "@/stores/themeStore";
 import { Trans } from "@/types/trans";
 import { formatDate } from "@/utils/formatDate";
 import { Ionicons } from "@expo/vector-icons";
 import { useAtomValue } from "jotai";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-type props = {
+type Props = {
   item: Trans;
   symbol: string;
+  baseDelay: number;
+  index?: number;
 };
 
-export default function TransaItem({ item, symbol }: props) {
+export default function TransItem({
+  item,
+  symbol,
+  baseDelay = 1000,
+  index = 0,
+}: Props) {
   const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createStyles(COLORS);
+  const { mutate: deleteTransaction } = useDeleteTransaction();
+  const animation = useStaggeredItem(index, baseDelay, 100);
 
   const isIncome = item.type === "income";
   const { name, icon } = CATEGORIES_INDEXED[item.category];
-  const { mutate: deleteTrans } = useDeleteTransaction();
 
   function handleDelete(id: string) {
-    deleteTrans(id);
+    deleteTransaction(id);
   }
 
   return (
-    <View style={styles.transCard}>
+    <Animated.View style={[styles.transCard, animation]}>
       <TouchableOpacity style={styles.transContent}>
         <View style={styles.categoryIconContainer}>
           <Ionicons
@@ -59,7 +74,7 @@ export default function TransaItem({ item, symbol }: props) {
       >
         <Ionicons name="trash-outline" size={20} color={COLORS.expense} />
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 }
 

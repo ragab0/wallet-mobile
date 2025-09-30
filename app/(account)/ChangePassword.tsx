@@ -4,7 +4,7 @@ import { ErrorAlert } from "@/components/ErrorAlert";
 import KeyboardLayout from "@/components/KeyboardLayout";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PasswordField from "@/components/PasswordField";
-import { SuccessAlert } from "@/components/SuccessAlert";
+import SuccessAlert from "@/components/SuccessAlert";
 import { useChangePassword } from "@/hooks/useUser";
 import { getThemeColorsAtom } from "@/stores/themeStore";
 import { ChangePasswordData } from "@/types/user";
@@ -51,7 +51,7 @@ export default function ChangePasswordScreen() {
       setTimeout(() => {
         setSuccessMessage(null);
         navigation.goBack();
-      }, 2000);
+      }, 5000);
     } catch (error) {
       setError(error);
     }
@@ -68,7 +68,7 @@ export default function ChangePasswordScreen() {
         {successMessage && (
           <SuccessAlert
             message={successMessage}
-            onDismiss={() => setSuccessMessage(null)}
+            onDismis={() => setSuccessMessage(null)}
           />
         )}
         {error && (

@@ -1,9 +1,10 @@
 import { styles } from "@/assets/styles/auth.styles";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import { FormField } from "@/components/FormField";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { COLORS } from "@/constants/theme";
 import { useSendVerifyEmail } from "@/hooks/useAuth";
 import { SendVerifyEmailRequest } from "@/types/auth";
-import { AppError } from "@/types/error";
 import { sendVerifyEmailSchema } from "@/validations/auth.validation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link, useLocalSearchParams } from "expo-router";
@@ -16,8 +17,11 @@ export default function VerifyEmail() {
   const { message, payload } = useLocalSearchParams();
   const email = JSON.parse((payload as string) || "{}").email;
   const [isRedirectError, setIsRedirectError] = useState(!!message?.length);
-  const [apiError, setApiError] = useState<AppError | null>(null);
-  const { isPending: isLoading, mutateAsync } = useSendVerifyEmail();
+  const {
+    isPending: isLoading,
+    mutate,
+    error: apiError,
+  } = useSendVerifyEmail();
   const {
     control,
     handleSubmit,
@@ -30,20 +34,11 @@ export default function VerifyEmail() {
   });
 
   async function onSubmit(data: SendVerifyEmailRequest) {
-    setApiError(null);
-    try {
-      await mutateAsync(data);
-    } catch (err) {
-      setApiError(err as AppError);
-    }
+    mutate(data);
   }
 
   function dismissRedirectError() {
     setIsRedirectError(false);
-  }
-
-  function dismissError() {
-    setApiError(null);
   }
 
   return (
@@ -66,13 +61,8 @@ export default function VerifyEmail() {
             showRetry={false}
           />
         )}
-        {apiError && (
-          <ErrorAlert
-            error={apiError}
-            onDismiss={dismissError}
-            showRetry={true}
-          />
-        )}
+
+        {apiError && <ErrorAlert error={apiError} />}
 
         <View style={styles.formContainer}>
           <FormField
@@ -94,6 +84,7 @@ export default function VerifyEmail() {
           onPress={handleSubmit(onSubmit)}
           disabled={isLoading || !isValid}
         >
+          {isLoading && <LoadingSpinner size="small" color={COLORS.white} />}
           <Text style={styles.buttonText}>
             {isLoading ? "Getting Code..." : "Get Code"}
           </Text>

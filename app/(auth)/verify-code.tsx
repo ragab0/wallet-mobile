@@ -1,7 +1,10 @@
 import { styles } from "@/assets/styles/auth.styles";
-import { CodeInput } from "@/components/CodeInput";
+import CodeInput from "@/components/CodeInput";
 import { ErrorAlert } from "@/components/ErrorAlert";
-import { SuccessAlert } from "@/components/SuccessAlert";
+import KeyboardLayout from "@/components/KeyboardLayout";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import SuccessAlert from "@/components/SuccessAlert";
+import { COLORS } from "@/constants/theme";
 import { useReSendVerifyEmail, useVerifyCode } from "@/hooks/useAuth";
 import { VerifyCodeRequest } from "@/types/auth";
 import { AppError } from "@/types/error";
@@ -11,7 +14,6 @@ import { Link, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function VerifyCode() {
   const verifyMutation = useVerifyCode();
@@ -93,22 +95,17 @@ export default function VerifyCode() {
   const isLoading = isVerifying || isResending;
 
   return (
-    <KeyboardAwareScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={{ flexGrow: 1 }}
-      enableOnAndroid={true}
-      enableAutomaticScroll={false}
-    >
+    <KeyboardLayout>
       <View style={styles.container}>
         <Text style={styles.title}>Enter Verification Code</Text>
-        <Text style={styles.subtitle}>
+        <View style={styles.subtitle}>
           We sent a 6-digit code to{"\n"}
           <Text style={styles.emailText}>{email}</Text>
-        </Text>
+        </View>
 
         {/* Success Message */}
         {successMessage && !apiError && (
-          <SuccessAlert message={successMessage} onDismiss={dismissSuccess} />
+          <SuccessAlert message={successMessage} onDismis={dismissSuccess} />
         )}
 
         {/* API Error */}
@@ -162,6 +159,7 @@ export default function VerifyCode() {
           onPress={handleSubmit(onSubmit)}
           disabled={isLoading || !isValid}
         >
+          {isLoading && <LoadingSpinner size="small" color={COLORS.white} />}
           <Text style={styles.buttonText}>
             {isVerifying ? "Verifying..." : "Verify Email"}
           </Text>
@@ -200,6 +198,6 @@ export default function VerifyCode() {
           </Link>
         </View>
       </View>
-    </KeyboardAwareScrollView>
+    </KeyboardLayout>
   );
 }

@@ -4,6 +4,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { LogoutButton } from "@/components/LogOutBtn";
 import TransItem from "@/components/TransItem";
 import TransesNotFound from "@/components/TransNotFound";
+import { useFadeIn, useFlipCard, useStaggerHeader } from "@/hooks/useAnimation";
 import { useAuth } from "@/hooks/useAuth";
 import {
   useGetAllTransactionsMine,
@@ -14,24 +15,39 @@ import { getThemeColorsAtom } from "@/stores/themeStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useAtomValue } from "jotai";
-import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function Home() {
   const COLORS = useAtomValue(getThemeColorsAtom);
   const styles = createHomeStyles(COLORS);
   const { symbol = "$" } = useAtomValue(getSelectedCurrencyAtom) || {};
-
-  const { user, error } = useAuth();
+  const { user } = useAuth();
   const { isPending: isLoading, data: transactions } =
     useGetAllTransactionsMine();
   const { data: summary } = useGetTransactionsSummary();
+  const headerAnim = useStaggerHeader(0);
+  const cardAnim = useFlipCard(500);
+  const titleAnim = useFadeIn(300, 700);
+  const baseDelay = 1000;
 
   if (isLoading) return <LoadingSpinner size="large" isFull={true} />;
 
   return (
     <View style={styles.container}>
       {/* header */}
-      <View style={styles.header}>
+      <Animated.View
+        style={[
+          styles.header,
+          { opacity: headerAnim.opacity, transform: headerAnim.transform },
+        ]}
+      >
         {/* header info */}
         <View style={styles.headerInfo}>
           <Image source={Logo} style={styles.headerLogo} />
@@ -52,10 +68,17 @@ export default function Home() {
           </TouchableOpacity>
           <LogoutButton />
         </View>
-      </View>
+      </Animated.View>
 
       {/* balance card */}
-      <View style={styles.balanceCard}>
+      <Animated.View
+        style={[
+          styles.balanceCard,
+          {
+            transform: cardAnim.transform,
+          },
+        ]}
+      >
         <Text style={styles.balanceTitle}>Total Balance</Text>
         <Text style={styles.balanceAmount}>
           {symbol}
@@ -78,14 +101,31 @@ export default function Home() {
             </Text>
           </View>
         </View>
-      </View>
+      </Animated.View>
 
       {/* recent trans */}
-      <Text style={styles.transesListHeading}>Recent Transactions</Text>
+      <Animated.Text
+        style={[
+          styles.transesListHeading,
+          {
+            opacity: titleAnim,
+          },
+        ]}
+      >
+        Recent Transactions
+      </Animated.Text>
       <FlatList
         contentContainerStyle={styles.transesListContent}
         data={transactions}
-        renderItem={({ item }) => <TransItem item={item} symbol={symbol} />}
+        renderItem={({ item, index }) => (
+          <TransItem
+            item={item}
+            symbol={symbol}
+            index={index}
+            baseDelay={baseDelay}
+          />
+        )}
+        keyExtractor={(item) => item.id}
         ListEmptyComponent={<TransesNotFound />}
         showsVerticalScrollIndicator={false}
       />

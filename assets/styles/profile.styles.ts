@@ -50,7 +50,7 @@ export const createProfileStyles = (COLORS: any) =>
       backgroundColor: COLORS.primary,
       paddingVertical: 16,
       borderRadius: 12,
-      marginTop: 10,
+      marginTop: 30,
     },
 
     saveButtonText: {

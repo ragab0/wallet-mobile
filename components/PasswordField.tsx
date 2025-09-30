@@ -171,7 +171,6 @@ const passwordStyles = StyleSheet.create({
 
   strengthContainer: {
     marginTop: 8,
-    marginBottom: 4,
   },
 
   strengthBar: {

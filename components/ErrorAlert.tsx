@@ -3,6 +3,7 @@ import { useSlideInFromY } from "@/hooks/useAnimation";
 import { AppError } from "@/types/error";
 import { ErrorHandler } from "@/utils/errorHandler";
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import {
   Animated,
   StyleSheet,
@@ -14,20 +15,23 @@ import {
 interface ErrorAlertProps {
   error: AppError;
   onRetry?: () => void;
-  onDismiss: () => void;
+  onDismiss?: () => void;
   showRetry?: boolean;
 }
 
 export const ErrorAlert: React.FC<ErrorAlertProps> = ({
-  error,
+  error: e,
   onRetry,
   onDismiss,
   showRetry = true,
 }) => {
-  const iconName = ErrorHandler.getErrorIcon(error.type) as any;
-  const iconColor = ErrorHandler.getErrorColor(error.type);
+  const [error, setError] = useState<AppError | null>(e);
+  const iconName = ErrorHandler.getErrorIcon(e.type);
+  const iconColor = ErrorHandler.getErrorColor(e.type);
   const errorAnim = useSlideInFromY(300, 0, false);
   const errorStyles = createErrorStyles(iconColor);
+
+  if (!error) return;
 
   return (
     <Animated.View
@@ -55,7 +59,10 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
             <Text style={errorStyles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={errorStyles.dismissButton} onPress={onDismiss}>
+        <TouchableOpacity
+          style={errorStyles.dismissButton}
+          onPress={onDismiss ? onDismiss : () => setError(null)}
+        >
           <Ionicons name="close" size={20} color="#666" />
         </TouchableOpacity>
       </View>
@@ -66,8 +73,9 @@ export const ErrorAlert: React.FC<ErrorAlertProps> = ({
 const createErrorStyles = (color: string) =>
   StyleSheet.create({
     errorContainer: {
+      width: "100%",
       flexDirection: "row",
-      alignItems: "flex-start",
+      alignItems: "center",
       justifyContent: "space-between",
       backgroundColor: "#FEF2F2",
       borderColor: color,
@@ -80,7 +88,7 @@ const createErrorStyles = (color: string) =>
     errorContent: {
       flex: 1,
       flexDirection: "row",
-      alignItems: "flex-start",
+      alignItems: "center",
     },
     errorTextContainer: {
       flex: 1,
@@ -90,7 +98,7 @@ const createErrorStyles = (color: string) =>
       fontSize: 16,
       fontWeight: "600",
       color: color,
-      marginBottom: 4,
+      textTransform: "capitalize",
     },
     errorDetails: {
       fontSize: 14,

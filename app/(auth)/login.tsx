@@ -13,11 +13,10 @@ import {
 } from "@/hooks/useAnimation";
 import { useLogin } from "@/hooks/useAuth";
 import { LoginRequest } from "@/types/auth";
-import { AppError } from "@/types/error";
 import { loginSchema } from "@/validations/auth.validation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Link } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -26,13 +25,12 @@ export default function Login() {
   const imageAnim = useSlideUpFadeIn(600, 0);
   const titleAnim = useSlideInFromY(500, 600, false);
   const formAnim = useSlideInFromY(500, 800, true);
-  const buttonAnim = useSlideInFromY(500, 1000, true);
-  const googleButtonAnim = useFadeIn(500, 1200);
-  const footerAnim = useSlideUpFadeIn(600, 1500, 50);
+  const buttonAnim = useSlideInFromY(500, 1200, true);
+  const googleButtonAnim = useFadeIn(500, 1500);
+  const footerAnim = useSlideUpFadeIn(600, 2000, 50);
   const buttonPress = useButtonPress();
 
-  const [apiError, setApiError] = useState<AppError | null>(null);
-  const { isPending: isLoading, mutateAsync } = useLogin();
+  const { isPending: isLoading, mutate, error: apiError } = useLogin();
   const {
     control,
     handleSubmit,
@@ -42,16 +40,7 @@ export default function Login() {
   });
 
   async function onSubmit(data: LoginRequest) {
-    setApiError(null);
-    try {
-      await mutateAsync(data);
-    } catch (err) {
-      setApiError(err as AppError);
-    }
-  }
-
-  function dismissError() {
-    setApiError(null);
+    mutate(data);
   }
 
   return (
@@ -74,13 +63,7 @@ export default function Login() {
           <Text style={styles.title}>Welcome Back</Text>
         </Animated.View>
 
-        {apiError && (
-          <ErrorAlert
-            error={apiError}
-            onDismiss={dismissError}
-            showRetry={true}
-          />
-        )}
+        {apiError && <ErrorAlert error={apiError} />}
 
         <Animated.View
           style={[
